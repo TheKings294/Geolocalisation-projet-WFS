@@ -16,7 +16,7 @@ $short_time = json_encode([
 
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../'); // Going up to the root directory
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 try {
@@ -46,8 +46,9 @@ for($i = 0; $i < 50; $i++) {
     try {
         $stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
         $stmt->bindValue(':email', $faker->email());
-        $stmt->bindValue(':password', $faker->password());
+        $stmt->bindValue(':password', password_hash($faker->password(), PASSWORD_DEFAULT));
         $stmt->bindValue(':is_active', $faker->numberBetween(0, 1), PDO::PARAM_BOOL);
+        $stmt->execute();
     } catch (Exception $e) {
         echo $e->getMessage();
         exit();
@@ -95,13 +96,18 @@ for ($i = 0; $i < 30; $i++) {
     $address = $data['features']['0']['properties']['label'];
     $imgUrl = 'mcdo'.$imgUrlRandom.'.jpg';
     $hourly = $hourlyRandom === 1 ? $long_time : $short_time;
-    $departement = $datas['0']['departement']['code'];
+    if(!isset($datas['0']['departement']['code'])) {
+        $departement = substr($data['features']['0']['properties']['postcode'], -3, 2);
+    } else {
+        $departement = $datas['0']['departement']['code'];
+    }
     $group_id = $faker->numberBetween(1, 10);
-    $coordonate = ST_Point(int($data['features']['0']['properties']['x']), int($data['features']['0']['properties']['y']));
+    $x = $data['features']['0']['properties']['x'];
+    $y = $data['features']['0']['properties']['y'];
 
     try {
-        $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department, coordonate, group_id) 
-VALUES (:name, :siret, :address, :img, :manager, :hourly, :department, :coordonate, :group_id)');
+        $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department, coordonate_x, coordonate_y, group_id) 
+VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':siret', $faker->siret());
         $stmt->bindValue(':address', $address);
@@ -109,8 +115,10 @@ VALUES (:name, :siret, :address, :img, :manager, :hourly, :department, :coordona
         $stmt->bindValue(':manager', $faker->name());
         $stmt->bindValue(':hourly', $hourly);
         $stmt->bindValue(':department', $departement);
-        $stmt->bindValue(':coordonate', $coordonate);
+        $stmt->bindValue(':x', $x);
+        $stmt->bindValue(':y', $y);
         $stmt->bindValue(':group_id', $group_id);
+        $stmt->execute();
     } catch (Exception $e) {
         echo $e->getMessage();
         exit();

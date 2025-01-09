@@ -102,8 +102,8 @@ for ($i = 0; $i < 30; $i++) {
         $departement = $datas['0']['departement']['code'];
     }
     $group_id = $faker->numberBetween(1, 10);
-    $x = $data['features']['0']['properties']['x'];
-    $y = $data['features']['0']['properties']['y'];
+    $x = $data['features']['0']['geometry']['coordinates'][0];
+    $y = $data['features']['0']['geometry']['coordinates'][1];
 
     try {
         $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department, coordonate_x, coordonate_y, group_id) 

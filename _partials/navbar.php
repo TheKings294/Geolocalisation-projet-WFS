@@ -18,10 +18,16 @@
                     <a class="nav-link active" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="index.php?component=map">Map</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="index.php?component=users">Users</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Sell Point</a>
+                    <a class="nav-link" href="index.php?component=sell-point">Sell Point</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?disconect">Disconect</a>
                 </li>
             </ul>
         </div>

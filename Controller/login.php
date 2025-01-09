@@ -30,6 +30,7 @@ require './Model/login.php';
             $_SESSION['auth'] = true;
             $_SESSION['username'] = $user['email'];
             $_SESSION['userId'] = $user['id'];
+            setcookie('user_id', $user['id'], time() + (86400 * 30), "/");
             header("Content-type: application/json");
             echo json_encode(['authentication' => true]);
             exit();

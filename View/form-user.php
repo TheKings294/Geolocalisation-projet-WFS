@@ -19,22 +19,22 @@
         </div>
         <div class="mb-3">
             <input type="checkbox" class="form-check-input" id="is-active" name="is-active">
-            <label class="form-check-label" for="is-active">Désactiver</label>
+            <label class="form-check-label" for="is-active">Activer ?</label>
         </div>
         <button type="button" class="btn btn-success" id="valid-btn">Submit</button>
     </form>
 </div>
 <script src="./assets/js/components/user.js" type="module"></script>
 <script type="module">
-    import {editUserFunction, setUser} from "./assets/js/components/user.js";
+    import {editUserFunction, setUserFunction} from "./assets/js/components/user.js";
 
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        if(params.has('action') && params.get('action') === "edit") {
+        if(params.has('action') && params.get('action') === "get") {
             editUserFunction(params.get('id'))
         } else if (params.has('action') && params.get('action') === "new") {
-            setUser()
+            setUserFunction()
         }
     })
 </script>

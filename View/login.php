@@ -26,7 +26,6 @@
     btnLogin.addEventListener('click', async () => {
         if(formLogin.checkValidity() === false) {
             formLogin.reportValidity()
-            console.log('fom false')
             return false
         }
         const loginResult = await login(formLogin)

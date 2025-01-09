@@ -19,6 +19,7 @@ export const setUserInfo = async (id, form) => {
 }
 export const setUser = async (form) => {
     const data = new FormData(form)
+    console.log(form)
     const res = await fetch(`index.php?component=form-user&action=new`, {
         headers: {
             'X-Requested-Width': 'XMLHttpRequest'

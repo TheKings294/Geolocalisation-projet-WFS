@@ -1,5 +1,6 @@
 import {getUerInfo, setUser, setUserInfo} from "../services/user.js";
 import {toast} from "./shared/toats.js";
+import {getCookie} from "./shared/cookie.js";
 
 export const editUserFunction = async (id) => {
     const res = await getUerInfo(id)
@@ -16,12 +17,12 @@ export const setUserFunction = async () => {
 const showUserInfo = (user) => {
     const emilElement = document.querySelector('#email')
     const checkBoxElement = document.querySelector('#is-active')
-
-    console.log('email', emilElement)
-    console.log('checkbox', checkBoxElement)
-
     emilElement.setAttribute('value', user.email)
-    checkBoxElement.checked = true
+    checkBoxElement.checked = user.is_active
+    const id = parseInt(getCookie('user_id'))
+    if(user.id === id) {
+        checkBoxElement.disabled = true
+    }
 }
 const handelBtn = (action, id = null) => {
     const validBtn = document.querySelector('#valid-btn')
@@ -30,7 +31,8 @@ const handelBtn = (action, id = null) => {
             validBtn.setAttribute('name', 'edit')
             validBtn.setAttribute('data-id', id)
             validBtn.addEventListener('click', async () => {
-                const res = await setUserInfo(id)
+                const form = document.querySelector('#form-user')
+                const res = await setUserInfo(id, form)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('successfull')) {
@@ -41,7 +43,8 @@ const handelBtn = (action, id = null) => {
         case 'new':
             validBtn.setAttribute('name', 'new')
             validBtn.addEventListener('click', async () => {
-                const res = await setUser()
+                const form = document.querySelector('#form-user')
+                const res = await setUser(form)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('successfull')) {

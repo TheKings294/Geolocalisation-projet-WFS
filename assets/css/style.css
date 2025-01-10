@@ -1,0 +1,15 @@
+.custom-svg-icon {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+.bg-success {
+    background-color: #27742d !important;
+}
+.btn-success {
+    background-color: #27742d !important;
+    border-color: #27742d !important;
+}
+.text-warning {
+    color: #ffd700 !important;
+}

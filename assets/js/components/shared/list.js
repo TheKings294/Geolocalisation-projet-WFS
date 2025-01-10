@@ -30,7 +30,7 @@ export const refreshPage = async (curentPage, situation, component, sens, who) =
     for (let i = 0; i < edit.length; i++) {
         edit[i].addEventListener('click', () => {
             const id = edit[i].getAttribute('data-id')
-            document.location.href=`index.php?component=${component}&action=get&id=${id}`
+            document.location.href=`index.php?component=form-user&action=get&id=${id}`
         })
     }
     getInpage(nbPage.result.nb, curentPage, situation, component, sens, who)

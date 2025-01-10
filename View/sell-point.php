@@ -1,6 +1,6 @@
 <div class="mt-2 mb-2 d-flex justify-content-center align-items-center">
     <h1 class="text-center mb-3">Sell Point List</h1>
-    <a href="index.php?component=form-user&action=new" class="ms-4 btn btn-success text-warning">New Sell Point <i class="fa-solid fa-plus"></i></a>
+    <a href="index.php?component=form-sell-point&action=new" class="ms-4 btn btn-success text-warning">New Sell Point <i class="fa-solid fa-plus"></i></a>
 </div>
 <div>
     <table class="table" id="list">

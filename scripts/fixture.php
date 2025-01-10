@@ -5,13 +5,66 @@
 require './vendor/autoload.php';
 
 $long_time = json_encode([
-    'ouverture' => '08:00',
-    'fermeture' => '23:00',
+    'Lundi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '23:00',
+    ],
+    'Mardi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '23:00',
+    ],
+    'Mercredi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '23:00',
+    ],
+    'Jeudi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '23:00',
+    ],
+    'Vendredi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '00:00',
+    ],
+    'Samedi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '00:00',
+    ],
+    'Dimanche' => [
+        'ouverture' => '08:00',
+        'fermeture' => '21:00',
+    ]
+
 ]);
 
 $short_time = json_encode([
-    'ouverture' => '10:00',
-    'fermeture' => '22:00',
+    'Lundi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '22:00',
+    ],
+    'Mardi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '22:00',
+    ],
+    'Mercredi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '22:00',
+    ],
+    'Jeudi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '22:00',
+    ],
+    'Vendredi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '23:00',
+    ],
+    'Samedi' => [
+        'ouverture' => '08:00',
+        'fermeture' => '00:00',
+    ],
+    'Dimanche' => [
+        'ouverture' => 'fermer',
+        'fermeture' => 'fermer',
+    ]
 ]);
 
 use Dotenv\Dotenv;

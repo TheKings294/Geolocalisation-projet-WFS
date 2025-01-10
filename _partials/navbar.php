@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-success">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">McDo Store Map</a>
+        <a class="navbar-brand" href="#"><img src="./assets/svg/favicon.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">McDo Store Map</a>
         <button
             class="navbar-toggler"
             type="button"
@@ -14,9 +14,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="index.php">Home</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?component=map">Map</a>
                 </li>

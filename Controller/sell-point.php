@@ -12,7 +12,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $page = isset($_GET['page']) ? cleanCodeString(intval($_GET['page'])) : 1;
             $who = isset($_GET['who']) ? cleanCodeString($_GET['who']) : null;
             $sens = isset($_GET['sens']) ? cleanCodeString($_GET['sens']) : null;
-            $res = getSellPoint($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens);
+            $res = getSellPoint($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens, null);
             if(!is_array($res)) {
                 header('Content-type: application/json');
                 echo json_encode(['error' => $res]);
@@ -23,6 +23,16 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'page':
             $res = getNbPage($pdo);
+            if(!is_array($res)) {
+                header('Content-type: application/json');
+                echo json_encode(['error' => $res]);
+                exit();
+            }
+            header('Content-type: application/json');
+            echo json_encode(['result' => $res]);
+            break;
+        case 'get':
+            $res = getSellPoint($pdo, null, null, null, null, 1);
             if(!is_array($res)) {
                 header('Content-type: application/json');
                 echo json_encode(['error' => $res]);

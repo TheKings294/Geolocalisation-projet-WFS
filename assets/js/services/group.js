@@ -1,3 +1,3 @@
 export const getGroup = async () => {
-    const res = await fetch()
+    const res = await fetch('')
 }

@@ -7,8 +7,8 @@ export const setMap = (x, y , zoom) => {
     }).addTo(map)
 }
 
-export const setMarker = (message = null, x , y) => {
-    let color = '#27742d'
+export const setMarker = (message = null, x , y, colorValue) => {
+    let color = colorValue
     let marker = L.marker([x, y], {
         icon: svgMarker(color)
     }).addTo(map)

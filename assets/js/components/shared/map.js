@@ -28,3 +28,6 @@ const svgMarker = (color) => {
         className: 'custom-svg-icon'
     })
 }
+export const setView = (x, y, zoom) => {
+    map.setView([y, x], zoom)
+}

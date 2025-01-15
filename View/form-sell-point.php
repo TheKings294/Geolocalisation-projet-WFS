@@ -64,7 +64,7 @@
                         <label for="groupe-name" class="form-label mb-4">Group Name</label>
                     </div>
                     <div class="col-auto">
-                        <select class="form-select" aria-label="Default select example" id="groupList">
+                        <select class="form-select" aria-label="Default select example" id="groupList" name="groupe-name">
                             <option selected value="null">--Group--</option>
                         </select>
                     </div>
@@ -74,14 +74,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" list="litsAddress" required>
-                    <datalist id="litsAddress">
-                        <option value="San Francisco">
-                        <option value="New York">
-                        <option value="Seattle">
-                        <option value="Los Angeles">
-                        <option value="Chicago">
-                    </datalist>
+                    <input type="text" class="form-control" id="address" name="address" required data-x="" data-y="" data-dep="">
                 </div>
                 <div class="map" id="map" style="height: 300px">
 
@@ -94,83 +87,83 @@
                     <h4 class="text-warning">Monday</h4>
                     <div class="col">
                         <label for="monday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="monday-start" name="monday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="monday-start" name="monday-start" required>
                     </div>
                     <div class="col">
                         <label for="monday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="monday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="monday-stop" name="monday-stop" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Tuesday</h4>
                     <div class="col">
                         <label for="tuesday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="tuesday-start" name="tuesday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="tuesday-start" name="tuesday-start" required>
                     </div>
                     <div class="col">
                         <label for="tuesday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="tuesday-stop" name="tuesday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="tuesday-stop" name="tuesday-stop" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Wednesday</h4>
                     <div class="col">
                         <label for="wednesday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="wednesday-start" name="wednesday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="wednesday-start" name="wednesday-start" required>
                     </div>
                     <div class="col">
                         <label for="wednesday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="wednesday-stop" name="wednesday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="wednesday-stop" name="wednesday-stop" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Thursday</h4>
                     <div class="col">
                         <label for="thursday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="thursday-start" name="thursday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="thursday-start" name="thursday-start" required>
                     </div>
                     <div class="col">
                         <label for="thursday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="thursday-stop" name="thursday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="thursday-stop" name="thursday-stop" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Friday</h4>
                     <div class="col">
                         <label for="friday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="friday-start" name="friday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="friday-start" name="friday-start" required>
                     </div>
                     <div class="col">
                         <label for="friday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="friday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="friday-stop" name="monday-stop" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Saturday</h4>
                     <div class="col">
                         <label for="saturday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="saturday-start" name="saturday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="saturday-start" name="saturday-start" required>
                     </div>
                     <div class="col">
                         <label for="saturday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="saturday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="saturday-stop" name="monday-stop" required>
                     </div>
                 </div>
-                <div class="row mb-3">
+                <div class="row mb-3" id="sunday">
                     <h4 class="text-warning">Sunday</h4>
                     <div class="col">
                         <label for="sunday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm" id="sunday-start" name="sunday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="sunday-start" name="sunday-start">
                     </div>
                     <div class="col">
                         <label for="sunday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm" id="sunday-stop" name="sunday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="sunday-stop" name="sunday-stop">
                     </div>
                 </div>
             </form>
         </div>
         <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
-            <form id="form3">
+            <form id="form3" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="img" class="form-label">Image</label>
                     <input class="form-control" type="file" id="img" name="img" required>

@@ -60,6 +60,10 @@ const modalForm = `
         <label for="group-name" class="form-label">Group Name</label>
         <input type="text" id="group-name" class="form-control" required>
     </div>
+    <div class="mb-3">
+        <label for="color-group" class="form-label">Group Color</label>
+        <input type="color" class="form-control form-control-color" id="color-group" value="#563d7c" title="Choose your color">
+    </div>
 </form>`
 
 const handelBtn = () => {

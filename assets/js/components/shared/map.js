@@ -31,3 +31,6 @@ const svgMarker = (color) => {
 export const setView = (x, y, zoom) => {
     map.setView([y, x], zoom)
 }
+export const setPolygon = (latLang) => {
+    let polygon = L.polygon(latLang, {color: 'blue'}).addTo(map)
+}

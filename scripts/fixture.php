@@ -86,8 +86,9 @@ $faker = Faker\Factory::create('fr_FR');
 
 for ($i = 0; $i < 10; $i++) {
     try {
-        $stmt = $pdo->prepare('INSERT INTO `groups` (name) VALUES (:name)');
+        $stmt = $pdo->prepare('INSERT INTO `groups` (name, color) VALUES (:name, :color)');
         $stmt->bindValue(':name', $faker->company());
+        $stmt->bindValue(':color', $faker->hexColor());
         $stmt->execute();
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -117,8 +118,83 @@ try {
     echo $e->getMessage();
     exit();
 }
+$jsonDep = json_decode(file_get_contents(__DIR__ . '/department.geojson'));
+$jsonOut = json_decode(file_get_contents(__DIR__ . '/outremer.geojson'));
+foreach ($jsonDep->features as $key) {
+    try {
+        $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
+        $stmt->bindValue(':name', $key->properties->nom);
+        $stmt->bindValue(':depart_num', $key->properties->code);
+        $stmt->bindValue(':polugon_json', json_encode($key->geometry->coordinates));
+        $stmt->execute();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        exit();
+    }
+}
+foreach ($jsonOut->features as $key) {
+    try {
+        $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
+        $stmt->bindValue(':name', $key->properties->nom);
+        $stmt->bindValue(':depart_num', $key->properties->code);
+        $stmt->bindValue(':polugon_json', json_encode($key->geometry->coordinates));
+        $stmt->execute();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        exit();
+    }
+}
 
 for ($i = 0; $i < 30; $i++) {
+     $Datas = getAddress($faker, $client);
+     $datas = $Datas[1];
+     $data = $Datas[0];
+    if($datas > '977' || $datas === '00') {
+        $Datas = getAddress($faker, $client);
+        $datas = $Datas[1];
+        $data = $Datas[0];
+    }
+    try {
+        $stmt = $pdo->prepare('SELECT id FROM `department` WHERE `depart_num` = :departement');
+        $stmt->bindValue(':departement', $datas, PDO::PARAM_STR);
+        $stmt->execute();
+        $res = $stmt->fetch();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+    $imgUrlRandom = $faker->numberBetween(1,5);
+    $hourlyRandom = $faker->numberBetween(1,2);
+
+    $name = 'Mc Donalds ' . $data['features']['0']['properties']['city'];
+    $address = $data['features']['0']['properties']['label'];
+    $imgUrl = 'mcdo'.$imgUrlRandom.'.jpg';
+    $hourly = $hourlyRandom === 1 ? $long_time : $short_time;
+    $departement = $res['id'];
+    $group_id = $faker->numberBetween(1, 10);
+    $x = $data['features']['0']['geometry']['coordinates'][0];
+    $y = $data['features']['0']['geometry']['coordinates'][1];
+
+    try {
+        $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
+VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
+        $stmt->bindValue(':name', $name);
+        $stmt->bindValue(':siret', $faker->siret());
+        $stmt->bindValue(':address', $address);
+        $stmt->bindValue(':img', $imgUrl);
+        $stmt->bindValue(':manager', $faker->name());
+        $stmt->bindValue(':hourly', $hourly);
+        $stmt->bindValue(':department', $departement);
+        $stmt->bindValue(':x', $x);
+        $stmt->bindValue(':y', $y);
+        $stmt->bindValue(':group_id', $group_id);
+        $stmt->execute();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        exit();
+    }
+}
+
+function getAddress ($faker, $client)  {
     $adresse = $faker->streetAddress();
     $adresse = str_replace(" ", "+", $adresse);
 
@@ -141,39 +217,10 @@ for ($i = 0; $i < 30; $i++) {
         echo "Erreur lors de l'appel API : " . $e->getMessage();
         exit();
     }
-
-    $imgUrlRandom = $faker->numberBetween(1,5);
-    $hourlyRandom = $faker->numberBetween(1,2);
-
-    $name = 'Mc Donalds ' . $data['features']['0']['properties']['city'];
-    $address = $data['features']['0']['properties']['label'];
-    $imgUrl = 'mcdo'.$imgUrlRandom.'.jpg';
-    $hourly = $hourlyRandom === 1 ? $long_time : $short_time;
     if(!isset($datas['0']['departement']['code'])) {
-        $departement = substr($data['features']['0']['properties']['postcode'], -3, 2);
+        $datas = substr($data['features']['0']['properties']['postcode'], -3, 2);
     } else {
-        $departement = $datas['0']['departement']['code'];
+        $datas = $datas['0']['departement']['code'];
     }
-    $group_id = $faker->numberBetween(1, 10);
-    $x = $data['features']['0']['geometry']['coordinates'][0];
-    $y = $data['features']['0']['geometry']['coordinates'][1];
-
-    try {
-        $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department, coordonate_x, coordonate_y, group_id) 
-VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
-        $stmt->bindValue(':name', $name);
-        $stmt->bindValue(':siret', $faker->siret());
-        $stmt->bindValue(':address', $address);
-        $stmt->bindValue(':img', $imgUrl);
-        $stmt->bindValue(':manager', $faker->name());
-        $stmt->bindValue(':hourly', $hourly);
-        $stmt->bindValue(':department', $departement);
-        $stmt->bindValue(':x', $x);
-        $stmt->bindValue(':y', $y);
-        $stmt->bindValue(':group_id', $group_id);
-        $stmt->execute();
-    } catch (Exception $e) {
-        echo $e->getMessage();
-        exit();
-    }
+    return [$data, $datas];
 }

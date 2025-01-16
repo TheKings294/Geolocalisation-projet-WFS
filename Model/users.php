@@ -36,3 +36,14 @@ function getPageNumbers($pdo)
         return $e->getMessage();
     }
 }
+function deleteUser($pdo, $id): bool | string
+{
+    try {
+        $stmt = $pdo->prepare("DELETE FROM `users` WHERE `id` = :id");
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}

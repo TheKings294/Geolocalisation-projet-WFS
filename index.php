@@ -96,7 +96,6 @@
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossorigin="">
         </script>
-        <!--<script src="Includes/autoComplete.js-10.2.9/dist/autoComplete.js"></script>-->
-        <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
+        <script src="Includes/autoComplete.js-10.2.9/dist/autoComplete.js"></script>
     </body>
 </html>

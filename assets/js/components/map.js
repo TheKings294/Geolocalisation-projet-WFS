@@ -18,12 +18,3 @@ export const popupBigMap = (Infos) => {
     `
     return message
 }
-export const colorMarker = async () => {
-    const groups = await request('groups', 'getall', null, null, null)
-    const colorTab = []
-
-    for (let i = 0; i < groups.data.length; i++) {
-        colorTab.push({[`${groups.data[i].name}`]: `#${(Math.floor(Math.random() * 0xFFFFFF)).toString(16)}`})
-    }
-    return colorTab
-}

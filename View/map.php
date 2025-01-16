@@ -14,18 +14,20 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
         const sellPoint = await request('sell-point', 'get')
+        const departement = await request('map', 'get_departments')
         setMap(47.16, 4.68, 6)
-        const colorTab = await colorMarker()
         for (let i = 0; i < sellPoint.result.length; i++) {
             const message = popupBigMap(sellPoint.result[i])
             let color
-            if(colorTab.some(item => Object.keys(item).some(key => key === sellPoint.result[i].group_name))) {
-                let groupName = sellPoint.result[i].group_name
-                color = colorTab.find(item => item.hasOwnProperty(groupName))?.[groupName]
+            if(sellPoint.result[i].group_id !== null) {
+                color = sellPoint.result[i].color
             } else {
                 color = '#27742d'
             }
             setMarker(message, parseFloat(sellPoint.result[i].coordonate_y), parseFloat(sellPoint.result[i].coordonate_x), color)
+        }
+        for (let i = 0; i < departement.length; i++) {
+
         }
     })
 </script>

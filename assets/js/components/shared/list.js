@@ -5,7 +5,7 @@ import {getRowUsers} from "../users.js";
 import {getRowsSellPoint} from "../sell-point.js";
 import {request} from "../../services/http-request.js";
 
-export const refreshPage = async (curentPage, situation, component, sens, who) => {
+export const refreshPage = async (curentPage, situation, component, sens, who, editLink) => {
     const tableElement = document.querySelector('#list')
     const tableBody = tableElement.querySelector('tbody')
     activeSpinner()
@@ -30,7 +30,7 @@ export const refreshPage = async (curentPage, situation, component, sens, who) =
     for (let i = 0; i < edit.length; i++) {
         edit[i].addEventListener('click', () => {
             const id = edit[i].getAttribute('data-id')
-            document.location.href=`index.php?component=form-user&action=get&id=${id}`
+            document.location.href=`index.php?component=form-${editLink}&action=get&id=${id}`
         })
     }
     getInpage(nbPage.result.nb, curentPage, situation, component, sens, who)

@@ -65,7 +65,7 @@
                     </div>
                     <div class="col-auto">
                         <select class="form-select" aria-label="Default select example" id="groupList" name="groupe-name">
-                            <option selected value="null">--Group--</option>
+                            <option selected class="list-item" value="null">--Group--</option>
                         </select>
                     </div>
                     <div class="col-auto">
@@ -168,6 +168,9 @@
                     <label for="img" class="form-label">Image</label>
                     <input class="form-control" type="file" id="img" name="img" required>
                 </div>
+                <div class="mb-3" id="img-view">
+
+                </div>
                 <div class="mb-3">
                     <button type="button" id="form-btn" class="btn btn-success text-warning">Submit</button>
                 </div>
@@ -181,9 +184,15 @@
 </div>
 <script src="./assets/js/components/form-sell-point.js" type="module"></script>
 <script type="module">
-    import {formSPFuntion} from "./assets/js/components/form-sell-point.js";
+    import {formSPFuntion, editSellPointFonction} from "./assets/js/components/form-sell-point.js";
 
     document.addEventListener('DOMContentLoaded', () => {
-        formSPFuntion()
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        if(params.has('action') && params.get('action') === "get") {
+            editSellPointFonction(params.get('id'))
+        } else if (params.has('action') && params.get('action') === "new") {
+            formSPFuntion()
+        }
     })
 </script>

@@ -35,7 +35,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
         let curentPage = 1
         await sortFunction(curentPage, 2)
-        refreshPage(curentPage, 2, 'sell-point', 'ASC', 'id')
+        refreshPage(curentPage, 2, 'sell-point', 'ASC', 'id', 'sell-point')
     })
 </script>
 

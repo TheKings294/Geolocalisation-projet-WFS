@@ -2,34 +2,54 @@ import {request} from "../services/http-request.js";
 import {toast} from "./shared/toats.js";
 import {setMap, setMarker, setView} from "./shared/map.js";
 import {updateProgressBar} from "./shared/progress-bar.js";
-import {FORM_PROGRESS_BAR_UPDATE} from "./shared/constant.js";
+import {FORM_PROGRESS_BAR_UPDATE, WEEK_DAY} from "./shared/constant.js";
 import {addressAutoCompletion, getDepartement} from "../services/form-sell-point.js";
 import {closeModal, modal} from "./shared/modal.js";
 
-export const formSPFuntion = () => {
+const url = new URL(window.location.href);
+const params = url.searchParams;
+
+export const formSPFuntion = async () => {
     const newGroupBtn = document.querySelector('#modal-open')
     setMap(47.16, 4.68, 5)
-    getGroup()
+    await getGroup()
     newGroupBtn.addEventListener('click', () => {
         modal(modalForm, 'Create group', 'Create Group Form')
     })
     handelBtn()
-    sendForm()
+    sendForm('new')
     autocompletion()
     handelModalBtn()
 }
+export const editSellPointFonction = async (id) => {
+    handelBtn()
+    const res = await request('form-sell-point', 'get', null, null, null, null, 'GET', id)
+    if(res.hasOwnProperty('error')) {
+        toast(res.error, 'text-bg-danger')
+        return false
+    }
+    await getGroup()
+    setMap(res.result.coordonate_y, res.result.coordonate_x, 13)
+    setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
+    setView(res.result.coordonate_x, res.result.coordonate_y, 20)
+    document.querySelector('#img').required = false
+    showSellPointInfo(res.result)
+    sendForm('edit')
+}
 const getGroup = async () => {
     const dataList = document.querySelector('#groupList')
-    const groupData = await request('groups', 'getall', null, null, null)
+    const groupData = await request('groups', 'getall', null, null, null, null, 'GET', null)
     if(groupData.hasOwnProperty('error')) {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
+    console.log(groupData)
     for (let i = 0; i < groupData.data.length; i++) {
         const optionElement = document.createElement('option')
         optionElement.setAttribute('value', groupData.data[i].id)
         const textElement = document.createTextNode(groupData.data[i].name)
         optionElement.appendChild(textElement)
+        optionElement.classList.add('list-item')
         dataList.appendChild(optionElement)
     }
 }
@@ -76,6 +96,9 @@ const navBtnFuntion = (value) => {
                 }
                 if(i - 1 === 0) {
                     disabledBtn('prev', true)
+                } else if (i !== 1) {
+                    disabledBtn('next', false)
+                    document.querySelector('#next-btn').classList.remove('d-none')
                 }
                 updateTabsAndButton(i, i-1)
                 updateProgressBar(FORM_PROGRESS_BAR_UPDATE * (i-1))
@@ -100,35 +123,46 @@ const updateTabsAndButton = (now, next) => {
 const disabledBtn = (btn, action) => {
     document.querySelector(`#${btn}-btn`).disabled = action
 }
-const sendForm = () => {
+const sendForm = (action) => {
     document.querySelector('#form-btn').addEventListener('click', async () => {
-        console.log('je suis la')
         const adresse = document.querySelector('#address')
         let x = adresse.getAttribute('data-x')
         let y = adresse.getAttribute('data-y')
         let dep = adresse.getAttribute('data-dep')
         const timeInputs = document.querySelectorAll('.time')
         let data = new FormData()
+        let id
         data.append('name', document.querySelector('#name').value)
         data.append('managerName', document.querySelector('#manager-name').value)
         data.append('siret', document.querySelector('#siret-number').value)
         data.append('group', document.querySelector('#groupList').value)
-        console.log(document.querySelector('#groupList').value)
         data.append('address', adresse.value)
-        //faire verif des valeurs quand on est en mode edit car pas de autocompletion
         data.append('coor-x', x)
         data.append('coor-y', y)
         data.append('department', dep)
+
+        if(params.get('action') === "get" && params.has('id')) {
+            id = params.get('id')
+        } else {
+            id = null
+        }
 
         for (let i = 0; i < timeInputs.length; i++) {
             data.append(`time${i}`, timeInputs[i].value)
         }
         data.append('image', document.querySelector('#img').files[0])
-        console.log(data)
-        const res = await request('form-sell-point', 'new', null, null, null, data, 'POST')
+        const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
         if(res.hasOwnProperty('success')) {
-            toast('Point de vente cree', 'text-bg-success')
+            toast(res.success, 'text-bg-success')
+            updateProgressBar('100')
+            navBtnFuntion(false)
+            navBtnFuntion(false)
+            if(params.has('action')&& params.get('action') === "new") {
+                document.querySelector('#form1').reset()
+                document.querySelector('#form2').reset()
+                document.querySelector('#form3').reset()
+            }
         } else if (res.hasOwnProperty('error')) {
             toast(res.error, 'text-bg-danger')
         }
@@ -190,4 +224,30 @@ const handelModalBtn = () => {
             closeModal()
         }
     })
+}
+const showSellPointInfo = (sell) => {
+    document.querySelector('#name').setAttribute('value', sell.name)
+    document.querySelector('#manager-name').setAttribute('value', sell.manager)
+    document.querySelector('#siret-number').setAttribute('value', sell.siret)
+    document.querySelector('#address').setAttribute('value', sell.address)
+    const json = JSON.parse(sell.hourly)
+    const times = document.querySelectorAll('.time')
+    for (let i = 0; i <= 13; i+=2) {
+        for (let j = 0; j < 7; j++) {
+            times[i].setAttribute('value', json[WEEK_DAY[j]].ouverture)
+            times[i+1].setAttribute('value', json[WEEK_DAY[j]].fermeture)
+        }
+    }
+    document.querySelector('#img-view').innerHTML = `
+    <img src="./uploads/${sell.img}" class="img-thumbnail" alt="Image du restaurant" width="200px">
+    `
+    document.querySelector('#address').setAttribute('data-x', sell.coordonate_x)
+    document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
+    document.querySelector('#address').setAttribute('data-dep', sell.department)
+    const groupElement = document.querySelectorAll('.list-item')
+    for(let i = 0; i < groupElement.length; i++) {
+        if(groupElement[i].value == sell.group_id) {
+            groupElement[i].selected = true
+        }
+    }
 }

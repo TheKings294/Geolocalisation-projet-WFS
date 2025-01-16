@@ -121,11 +121,12 @@ try {
 $jsonDep = json_decode(file_get_contents(__DIR__ . '/department.geojson'));
 $jsonOut = json_decode(file_get_contents(__DIR__ . '/outremer.geojson'));
 foreach ($jsonDep->features as $key) {
+    $data = swapLatLng($key->geometry->coordinates[0]);
     try {
         $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
         $stmt->bindValue(':name', $key->properties->nom);
         $stmt->bindValue(':depart_num', $key->properties->code);
-        $stmt->bindValue(':polugon_json', json_encode($key->geometry->coordinates));
+        $stmt->bindValue(':polugon_json', json_encode($data));
         $stmt->execute();
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -133,11 +134,12 @@ foreach ($jsonDep->features as $key) {
     }
 }
 foreach ($jsonOut->features as $key) {
+    $data = swapLatLng($key->geometry->coordinates[0]);
     try {
         $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
         $stmt->bindValue(':name', $key->properties->nom);
         $stmt->bindValue(':depart_num', $key->properties->code);
-        $stmt->bindValue(':polugon_json', json_encode($key->geometry->coordinates));
+        $stmt->bindValue(':polugon_json', json_encode($data));
         $stmt->execute();
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -223,4 +225,9 @@ function getAddress ($faker, $client)  {
         $datas = $datas['0']['departement']['code'];
     }
     return [$data, $datas];
+}
+function swapLatLng(array $data): array {
+    return array_map(function ($coords) {
+        return [$coords[1], $coords[0]]; // Swap lat and lng
+    }, $data);
 }

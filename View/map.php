@@ -8,9 +8,9 @@
 <script src="./assets/js/services/http-request.js" type="module"></script>
 <script src="./assets/js/components/map.js" type="module"></script>
 <script type="module">
-    import {setMap, setMarker} from "./assets/js/components/shared/map.js";
+    import {setMap, setMarker, setPolygon} from "./assets/js/components/shared/map.js";
     import {request} from "./assets/js/services/http-request.js";
-    import {popupBigMap, colorMarker} from "./assets/js/components/map.js";
+    import {popupBigMap} from "./assets/js/components/map.js";
 
     document.addEventListener('DOMContentLoaded', async () => {
         const sellPoint = await request('sell-point', 'get')
@@ -26,8 +26,9 @@
             }
             setMarker(message, parseFloat(sellPoint.result[i].coordonate_y), parseFloat(sellPoint.result[i].coordonate_x), color)
         }
-        for (let i = 0; i < departement.length; i++) {
-
+        console.log(departement.result[28].polygon_json)
+        for (let i = 0; i < departement.result.length; i++) {
+            setPolygon(JSON.parse(departement.result[i].polygon_json))
         }
     })
 </script>

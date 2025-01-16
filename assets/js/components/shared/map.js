@@ -33,4 +33,5 @@ export const setView = (x, y, zoom) => {
 }
 export const setPolygon = (latLang) => {
     let polygon = L.polygon(latLang, {color: 'blue'}).addTo(map)
+    map.fitBounds(polygon.getBounds());
 }

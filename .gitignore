@@ -1,3 +1,9 @@
 .env
 vendor/
 .idea/
+uploads/
+!uploads/mcdo1.jpg
+!uploads/mcdo2.jpg
+!uploads/mcdo3.jpg
+!uploads/mcdo4.jpg
+!uploads/mcdo5.jpg

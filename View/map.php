@@ -8,7 +8,7 @@
 <script src="./assets/js/services/http-request.js" type="module"></script>
 <script src="./assets/js/components/map.js" type="module"></script>
 <script type="module">
-    import {setMap, setMarker, setPolygon} from "./assets/js/components/shared/map.js";
+    import {setMap, setMarker, setPolygon, setView} from "./assets/js/components/shared/map.js";
     import {request} from "./assets/js/services/http-request.js";
     import {popupBigMap} from "./assets/js/components/map.js";
 
@@ -18,17 +18,18 @@
         setMap(47.16, 4.68, 6)
         for (let i = 0; i < sellPoint.result.length; i++) {
             const message = popupBigMap(sellPoint.result[i])
-            let color
+
+            let color = '#27742d'
             if(sellPoint.result[i].group_id !== null) {
                 color = sellPoint.result[i].color
-            } else {
-                color = '#27742d'
             }
+
             setMarker(message, parseFloat(sellPoint.result[i].coordonate_y), parseFloat(sellPoint.result[i].coordonate_x), color)
         }
-        console.log(departement.result[28].polygon_json)
         for (let i = 0; i < departement.result.length; i++) {
+            console.log('nom', departement.result[i].name, 'json', JSON.parse(departement.result[i].polygon_json));
             setPolygon(JSON.parse(departement.result[i].polygon_json))
         }
+        setView(47.16, 4.68, 6)
     })
 </script>

@@ -4,6 +4,9 @@
  */
 require './vendor/autoload.php';
 
+use GuzzleHttp\Client;
+use Dotenv\Dotenv;
+
 $long_time = json_encode([
     'Lundi' => [
         'ouverture' => '08:00',
@@ -67,8 +70,6 @@ $short_time = json_encode([
     ]
 ]);
 
-use Dotenv\Dotenv;
-
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
@@ -79,10 +80,10 @@ try {
     $error[] = "BDD conect error : {$e->getMessage()}";
 }
 
-use GuzzleHttp\Client;
 $client = new Client();
 
 $faker = Faker\Factory::create('fr_FR');
+
 
 for ($i = 0; $i < 10; $i++) {
     try {
@@ -108,6 +109,7 @@ for($i = 0; $i < 50; $i++) {
         exit();
     }
 }
+
 try {
     $stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
     $stmt->bindValue(':email', 'admin@admin.com');
@@ -118,23 +120,95 @@ try {
     echo $e->getMessage();
     exit();
 }
-$jsonDep = json_decode(file_get_contents(__DIR__ . '/department.geojson'));
-$jsonOut = json_decode(file_get_contents(__DIR__ . '/outremer.geojson'));
+
+
+function treatAsMultiPolygon(array $multipolygon) : array {
+    $data = [];
+    foreach($multipolygon as $key => $polygon) {
+        $data[$key] = treatAsPolygon($polygon);
+    }
+    return $data;
+}
+
+function treatAsPolygon(array $polygon) : array {
+    $data = [];
+    foreach($polygon as $key => $coordinates) {
+        $data[$key] = array_reverse($coordinates);
+    }
+    return $data;
+}
+
+$jsonDep = json_decode(file_get_contents(__DIR__ . '/departements-avec-outre-mer.geojson'));
+
 foreach ($jsonDep->features as $key) {
-    $data = swapLatLng($key->geometry->coordinates[0]);
     try {
-        $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
-        $stmt->bindValue(':name', $key->properties->nom);
-        $stmt->bindValue(':depart_num', $key->properties->code);
-        $stmt->bindValue(':polugon_json', json_encode($data));
-        $stmt->execute();
-    } catch (Exception $e) {
-        echo $e->getMessage();
-        exit();
+        $data = [];
+
+        foreach($key->geometry->coordinates as $coordinates) {
+            switch($key->geometry->type) {
+                case 'MultiPolygon':
+                    array_push($data, treatAsMultiPolygon($coordinates));
+                    break;
+                case "Polygon":
+                    $data = treatAsPolygon($coordinates);
+                    break;
+            }
+        }
+        /*if($key->properties->nom === 'Orne') {
+            file_put_contents(__DIR__.'/temp.txt', print_r($data, true), FILE_APPEND);
+        }*/
+        try {
+            $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polygon_json)');
+            $stmt->bindValue(':name', $key->properties->nom);
+            $stmt->bindValue(':depart_num', $key->properties->code);
+            $stmt->bindValue(':polygon_json', json_encode($data));
+            $stmt->execute();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            exit();
+        }
+
+    } catch(Exception $e) {
+        throw new Exception("Erreur sur le departement : {$key->properties->nom}\n");
     }
 }
+
+//exit();
+/*
+foreach ($jsonDep->features as $key) {
+    $data = [];
+
+    foreach($key->geometry as $geometry) {
+
+        var_dump($geometry->coordinates);
+        foreach($geometry->coordinates as $coordinates) {
+            $data[] = array_reverse($coordinates);
+        }
+    }
+
+    /*
+    for($j = 0; $j < count($key->geometry); $j++) {
+        for($i = 0; $i < count($key->geometry->coordinates) ; $i++) {
+
+
+            //$data[] = swapLatLng($key->geometry->coordinates[$i]);
+        }
+    }
+    */
+
+/*
+
+}
+*/
+
+
+/*
 foreach ($jsonOut->features as $key) {
-    $data = swapLatLng($key->geometry->coordinates[0]);
+    $data = [];
+    var_dump(count($key->geometry->coordinates));
+    for($i = 0; $i < count($key->geometry->coordinates) ; $i++) {
+        $data[] = swapLatLng($key->geometry->coordinates[$i]);
+    }
     try {
         $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
         $stmt->bindValue(':name', $key->properties->nom);
@@ -146,6 +220,7 @@ foreach ($jsonOut->features as $key) {
         exit();
     }
 }
+*/
 
 for ($i = 0; $i < 30; $i++) {
      $Datas = getAddress($faker, $client);
@@ -226,8 +301,11 @@ function getAddress ($faker, $client)  {
     }
     return [$data, $datas];
 }
+
 function swapLatLng(array $data): array {
     return array_map(function ($coords) {
         return [$coords[1], $coords[0]]; // Swap lat and lng
     }, $data);
 }
+
+

@@ -84,6 +84,33 @@ $client = new Client();
 
 $faker = Faker\Factory::create('fr_FR');
 
+/*try {
+    $stmt = $pdo->prepare('TRUNCATE TABLE department');
+    $stmt->execute();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    $stmt = $pdo->prepare('TRUNCATE TABLE `groups`');
+    $stmt->execute();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    $stmt = $pdo->prepare('TRUNCATE TABLE `sell_point`');
+    $stmt->execute();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    $stmt = $pdo->prepare('TRUNCATE TABLE `users`');
+    $stmt->execute();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}*/
 
 for ($i = 0; $i < 10; $i++) {
     try {
@@ -143,20 +170,23 @@ $jsonDep = json_decode(file_get_contents(__DIR__ . '/departements-avec-outre-mer
 foreach ($jsonDep->features as $key) {
     try {
         $data = [];
-
-        foreach($key->geometry->coordinates as $coordinates) {
-            switch($key->geometry->type) {
-                case 'MultiPolygon':
-                    array_push($data, treatAsMultiPolygon($coordinates));
-                    break;
-                case "Polygon":
-                    $data = treatAsPolygon($coordinates);
-                    break;
+        if(count($key->geometry->coordinates) > 1 && $key->geometry->type === 'Polygon') {
+            foreach($key->geometry->coordinates as $coordinate) {
+                array_push($data, treatAsPolygon($coordinate));
+            }
+        } else {
+            foreach($key->geometry->coordinates as $coordinates) {
+                switch($key->geometry->type) {
+                    case 'MultiPolygon':
+                        array_push($data, treatAsMultiPolygon($coordinates));
+                        break;
+                    case "Polygon":
+                        $data = treatAsPolygon($coordinates);
+                        break;
+                }
             }
         }
-        /*if($key->properties->nom === 'Orne') {
-            file_put_contents(__DIR__.'/temp.txt', print_r($data, true), FILE_APPEND);
-        }*/
+
         try {
             $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polygon_json)');
             $stmt->bindValue(':name', $key->properties->nom);
@@ -172,55 +202,6 @@ foreach ($jsonDep->features as $key) {
         throw new Exception("Erreur sur le departement : {$key->properties->nom}\n");
     }
 }
-
-//exit();
-/*
-foreach ($jsonDep->features as $key) {
-    $data = [];
-
-    foreach($key->geometry as $geometry) {
-
-        var_dump($geometry->coordinates);
-        foreach($geometry->coordinates as $coordinates) {
-            $data[] = array_reverse($coordinates);
-        }
-    }
-
-    /*
-    for($j = 0; $j < count($key->geometry); $j++) {
-        for($i = 0; $i < count($key->geometry->coordinates) ; $i++) {
-
-
-            //$data[] = swapLatLng($key->geometry->coordinates[$i]);
-        }
-    }
-    */
-
-/*
-
-}
-*/
-
-
-/*
-foreach ($jsonOut->features as $key) {
-    $data = [];
-    var_dump(count($key->geometry->coordinates));
-    for($i = 0; $i < count($key->geometry->coordinates) ; $i++) {
-        $data[] = swapLatLng($key->geometry->coordinates[$i]);
-    }
-    try {
-        $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polugon_json)');
-        $stmt->bindValue(':name', $key->properties->nom);
-        $stmt->bindValue(':depart_num', $key->properties->code);
-        $stmt->bindValue(':polugon_json', json_encode($data));
-        $stmt->execute();
-    } catch (Exception $e) {
-        echo $e->getMessage();
-        exit();
-    }
-}
-*/
 
 for ($i = 0; $i < 30; $i++) {
      $Datas = getAddress($faker, $client);
@@ -304,7 +285,7 @@ function getAddress ($faker, $client)  {
 
 function swapLatLng(array $data): array {
     return array_map(function ($coords) {
-        return [$coords[1], $coords[0]]; // Swap lat and lng
+        return [$coords[1], $coords[0]];
     }, $data);
 }
 

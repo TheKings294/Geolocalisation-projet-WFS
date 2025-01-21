@@ -32,6 +32,34 @@ export const setView = (x, y, zoom) => {
     map.setView([y, x], zoom)
 }
 export const setPolygon = (latLang) => {
-    let polygon = L.polygon(latLang, {color: 'blue'}).addTo(map)
-    map.fitBounds(polygon.getBounds());
+    let polygon = L.polygon(latLang, {
+        fillColor: 'bleu',
+        color: 'blue',
+        dashArray: '10',
+    }).addTo(map)
+
+    polygon.on({
+        //mouseover: highlightFeature,
+        //mouseout: resetHighlight,
+        click: zoomToFeature,
+    })
+}
+
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    layer.bringToFront();
+}
+function resetHighlight(e) {
+    polygon.resetStyle(e.target);
+}
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
 }

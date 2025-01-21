@@ -1,7 +1,7 @@
 .env
 vendor/
 .idea/
-uploads/
+uploads/*
 !uploads/mcdo1.jpg
 !uploads/mcdo2.jpg
 !uploads/mcdo3.jpg

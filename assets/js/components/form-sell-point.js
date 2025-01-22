@@ -15,25 +15,31 @@ export const formSPFuntion = async () => {
     await getGroup()
     newGroupBtn.addEventListener('click', () => {
         modal(modalForm, 'Create group', 'Create Group Form')
+        handelModalBtnGroup()
     })
     handelBtn()
     sendForm('new')
     autocompletion()
-    handelModalBtn()
 }
 export const editSellPointFonction = async (id) => {
     handelBtn()
     const res = await request('form-sell-point', 'get', null, null, null, null, 'GET', id)
+    const newGroupBtn = document.querySelector('#modal-open')
     if(res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
+    newGroupBtn.addEventListener('click', () => {
+        modal(modalForm, 'Create group', 'Create Group Form')
+        handelModalBntInsee()
+    })
     await getGroup()
     setMap(res.result.coordonate_y, res.result.coordonate_x, 13)
     setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
     setView(res.result.coordonate_x, res.result.coordonate_y, 20)
     document.querySelector('#img').required = false
     showSellPointInfo(res.result)
+    removeImage()
     sendForm('edit')
 }
 const getGroup = async () => {
@@ -43,6 +49,7 @@ const getGroup = async () => {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
+    dataList.innerHTML = ''
     for (let i = 0; i < groupData.result.length; i++) {
         const optionElement = document.createElement('option')
         optionElement.setAttribute('value', groupData.result[i].id)
@@ -212,7 +219,7 @@ const autocompletion = () => {
         }
     })
 }
-const handelModalBtn = () => {
+const handelModalBtnGroup = () => {
     document.querySelector('#modal-btn')?.addEventListener('click', async () => {
         const formModal = document.querySelector('#form-modal')
         if(formModal.checkValidity() === false) {
@@ -221,12 +228,20 @@ const handelModalBtn = () => {
         }
         const formData = new FormData
         formData.append('name', formModal.querySelector('#group-name').value)
-        const res = await request()
+        formData.append('color', formModal.querySelector('#color-group').value)
+        const res = await request('groups', 'new', null, null, null, formData, 'POST', null)
         if(res.hasOwnProperty('success')) {
             toast('Group created', 'text-bg-success')
             closeModal()
+            await getGroup()
+            document.querySelector('#modal-btn').removeEventListener('click', () => {})
+        } else if (res.hasOwnProperty('error')) {
+            toast(res.error, 'text-bg-danger')
         }
     })
+}
+const handelModalBntInsee = () => {
+
 }
 const showSellPointInfo = (sell) => {
     document.querySelector('#name').setAttribute('value', sell.name)
@@ -243,6 +258,7 @@ const showSellPointInfo = (sell) => {
     }
     document.querySelector('#img-view').innerHTML = `
     <img src="./uploads/${sell.img}" class="img-thumbnail" alt="Image du restaurant" width="200px">
+    <a href="#"><i class="fa-solid fa-times text-danger ms-1" id="remove-img-btn" data-id="${sell.id}"></i></a>
     `
     document.querySelector('#address').setAttribute('data-x', sell.coordonate_x)
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
@@ -253,4 +269,16 @@ const showSellPointInfo = (sell) => {
             groupElement[i].selected = true
         }
     }
+}
+const removeImage = () => {
+    document.querySelector('#remove-img-btn')?.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id
+        const res = await request('sell-point', 'delet-img', null, null, null, null, 'GET', id)
+        if (res.hasOwnProperty('error')) {
+            toast(res.error, 'text-bg-danger')
+        } else if (res.hasOwnProperty('success')) {
+            toast('image suprimer', 'text-bg-success')
+        }
+    })
+
 }

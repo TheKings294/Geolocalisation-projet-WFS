@@ -42,6 +42,14 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             }
             http_reponse_success();
             break;
+        case 'delet-img':
+            $id = isset($_GET['id']) ? intval(cleanCodeString($_GET['id'])) : null;
+            if ($id === null) {
+                http_reponse_error('id cannot be null');
+                exit();
+            }
+
+            break;
     }
     exit();
 }

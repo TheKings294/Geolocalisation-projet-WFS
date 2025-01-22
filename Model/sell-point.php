@@ -51,3 +51,7 @@ function deleteSellPoint($pdo, $id): bool | string
         return $e->getMessage();
     }
 }
+function selectImage($pdo, $id)
+{
+
+}

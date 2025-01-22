@@ -7,9 +7,9 @@ function getSellPoint($pdo, $page, $perPage, $who, $sens, $all)
     $query = "SELECT sell_point.*, d.name AS dep_name, g.color, g.name AS group_name FROM sell_point 
     LEFT JOIN geoloc_projet.`groups` g on g.id = sell_point.group_id 
     LEFT JOIN geoloc_projet.department d on sell_point.department_id = d.id";
-
+    
     if($who !== null && $sens !== null) {
-        $query .= " ORDER BY `$who` $sens";
+        $query .= " ORDER BY $who $sens";
     }
     if($all === null) {
         $query .= " LIMIT $perPage";

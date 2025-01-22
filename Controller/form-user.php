@@ -14,8 +14,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         case 'get':
             $res = getUser($pdo, $_GET['id']);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
             header('Content-type: application/json');
@@ -28,13 +27,11 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $is_active = isset($_POST['is-active']);
 
             if($email === null || $password === null) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => 'email or password invalid']);
+                http_reponse_error('email or password invalid');
                 exit();
             }
             if($password !== $check_password) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => 'password not matched']);
+                http_reponse_error('password not matched');
                 exit();
             }
             $password = password_hash($password, PASSWORD_DEFAULT);
@@ -42,12 +39,10 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
 
             $res = setUser($pdo, $email, $password, $is_active);
             if(!is_bool($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['successfull' => 'user created']);
+            http_reponse_success();
             break;
         case 'edit':
             $email = isset($_POST['email']) ? cleanCodeString($_POST['email']) : null;
@@ -57,8 +52,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
 
             if($email === null) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => 'email required']);
+               http_reponse_error('email required');
                 exit();
             }
             $res = updateUser($pdo, $id, $email, $is_active);
@@ -66,20 +60,17 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             if($password && $check_password !== null) {
                 $password = $password === $check_password ? password_hash($password, PASSWORD_DEFAULT) : null;
                 if($password === null) {
-                    header('Content-type: application/json');
-                    echo json_encode(['error' => 'password and check password invalid']);
+                    http_reponse_error('password and check password invalid');
                     exit();
                 }
                 $check_password = null;
                 $result = updatePassword($pdo, $password, $id);
             }
             if(is_bool($res) || is_bool($result)) {
-                header('Content-type: application/json');
-                echo json_encode(['successfull' => 'user updated']);
+                http_reponse_success();
                 exit();
             } else {
-                header('Content-type: application/json');
-                echo json_encode(['error' => [$res, $result]]);
+                http_reponse_error([$res, $result]);
             }
             break;
     }

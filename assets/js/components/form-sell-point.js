@@ -43,11 +43,10 @@ const getGroup = async () => {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
-    console.log(groupData)
-    for (let i = 0; i < groupData.data.length; i++) {
+    for (let i = 0; i < groupData.result.length; i++) {
         const optionElement = document.createElement('option')
-        optionElement.setAttribute('value', groupData.data[i].id)
-        const textElement = document.createTextNode(groupData.data[i].name)
+        optionElement.setAttribute('value', groupData.result[i].id)
+        const textElement = document.createTextNode(groupData.result[i].name)
         optionElement.appendChild(textElement)
         optionElement.classList.add('list-item')
         dataList.appendChild(optionElement)

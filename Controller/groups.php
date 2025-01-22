@@ -14,12 +14,10 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         case 'getall':
             $res = getGroups($pdo);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['data' => $res]);
+            http_response_result($res);
             break;
     }
     exit();

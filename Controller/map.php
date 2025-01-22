@@ -12,12 +12,10 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             case 'get_departments':
                 $res = get_departments($pdo);
                 if(is_string($res)) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['error' => $res]);
+                    http_reponse_error($res);
                     exit();
                 }
-                header('Content-Type: application/json');
-                echo json_encode(['result' => $res]);
+                http_response_result($res);
                 break;
         }
         exit();

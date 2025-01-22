@@ -42,6 +42,6 @@ export const refreshPage = async (curentPage, situation, component, sens, who, e
             document.location.href=`index.php?component=form-${editLink}&action=get&id=${id}`
         })
     }
-    getInpage(nbPage.result.nb, curentPage, situation, component, sens, who)
+    getInpage(nbPage.result.nb, curentPage, situation, component, sens, who, editLink)
     disabledSpinner()
 }

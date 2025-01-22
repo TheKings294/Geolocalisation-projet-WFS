@@ -14,48 +14,41 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $sens = isset($_GET['sens']) ? cleanCodeString($_GET['sens']) : null;
             $res = getSellPoint($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens, null);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_response_result($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['result' => $res]);
+            http_response_result($res);
             break;
         case 'page':
             $res = getNbPage($pdo);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['result' => $res]);
+            http_response_result($res);
             break;
         case 'get':
             $res = getSellPoint($pdo, null, null, null, null, 1);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['result' => $res]);
+            http_response_result($res);
             break;
         case 'delete':
             $id = isset($_GET['id']) ? intval(cleanCodeString($_GET['id'])) : null;
             if($id === null) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => 'id cannot be null']);
+                http_reponse_error('id cannot be null');
                 exit();
             }
             $res = deleteSellPoint($pdo, $id);
             if(is_string($res)) {
-                header('Content-type: application/json');
-                echo json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['success' => $res]);
+            http_reponse_success();
+            break;
+        case 'delete-img':
             break;
     }
     exit();

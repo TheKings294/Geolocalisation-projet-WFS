@@ -37,6 +37,12 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $password = password_hash($password, PASSWORD_DEFAULT);
             $check_password = null;
 
+            $check_eamil = verifEmail($pdo, $email);
+            if($check_eamil['usernb'] !== 0) {
+                http_reponse_error('email already exists');
+                exit();
+            }
+
             $res = setUser($pdo, $email, $password, $is_active);
             if(!is_bool($res)) {
                 http_reponse_error($res);
@@ -55,6 +61,12 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                http_reponse_error('email required');
                 exit();
             }
+            $check_eamil = verifEmail($pdo, $email, $id);
+            if($check_eamil['usernb'] !== 0) {
+                http_reponse_error('email already exists');
+                exit();
+            }
+
             $res = updateUser($pdo, $id, $email, $is_active);
 
             if($password && $check_password !== null) {

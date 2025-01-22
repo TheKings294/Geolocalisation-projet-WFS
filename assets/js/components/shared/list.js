@@ -24,15 +24,17 @@ export const refreshPage = async (curentPage, situation, component, sens, who, e
     for (let i = 0; i < trash.length; i++) {
         trash[i].addEventListener('click', async () => {
             const id = trash[i].getAttribute('data-id')
-            if(confirm('Voulez vous vraiment suprimer'))
-            console.log(id)
-            const response = await request(component, 'delete', null, null, null, null, 'GET', id)
-            if(response.hasOwnProperty('error')) {
-                toast(response.error, 'text-bg-danger')
-            } else if (response.hasOwnProperty('success')) {
-                toast('Objet suprimer', 'text-bg-success')
+            //console.log(confirm('Voulez vous vriament supriemr'))
+            if(confirm('Voulez vous vraiment suprimer') === true) {
+                console.log(id)
+                const response = await request(component, 'delete', null, null, null, null, 'GET', id)
+                if(response.hasOwnProperty('error')) {
+                    toast(response.error, 'text-bg-danger')
+                } else if (response.hasOwnProperty('success')) {
+                    toast('Objet suprimer', 'text-bg-success')
+                }
+                await refreshPage(curentPage, situation, component, sens, who, editLink)
             }
-            await refreshPage(curentPage, situation, component, sens, who, editLink)
         })
     }
     const edit = document.querySelectorAll('.fa-pen-to-square')

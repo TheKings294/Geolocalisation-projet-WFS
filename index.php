@@ -4,6 +4,8 @@
     require 'Includes/functions.php';
     require 'Includes/constant.php';
     require 'Includes/http-response.php';
+    require 'helpers/helper-sirenne-api.php';
+    require 'helpers/herlper-etat-api.php';
 
     if(isset($_GET["disconect"])) {
         session_destroy();
@@ -65,6 +67,7 @@
             ?>
         </header>
         <main>
+            <div id="alert-message"></div>
             <div class="container">
                 <?php
                     if(isset($_SESSION['auth'])) {

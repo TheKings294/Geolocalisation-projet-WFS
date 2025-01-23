@@ -55,10 +55,17 @@
                         <input type="text" class="form-control" id="manager-name" name="manager-name" required>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="siret-number" class="form-label">SIRET</label>
-                    <input type="text" class="form-control" id="siret-number" name="siret" required>
+                <div class="row mb-3">
+                    <div class="col-8">
+                        <label for="siret-number" class="form-label">SIRET</label>
+                        <input type="text" class="form-control" id="siret-number" name="siret" required>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Search by siret number</label>
+                        <button class="btn btn-success form-control text-warning" id="sirene-api-btn" type="button" title="Hover message" disabled>SIRET API</button>
+                    </div>
                 </div>
+
                 <div class=" row mb-3">
                     <div class="col-auto">
                         <label for="groupe-name" class="form-label mb-4">Group Name</label>
@@ -183,8 +190,10 @@
     <button class="btn btn-success text-warning" id="next-btn">Next</button>
 </div>
 <script src="./assets/js/components/form-sell-point.js" type="module"></script>
+<script src="./assets/js/services/http-request.js" type="module"></script>
 <script type="module">
     import {formSPFuntion, editSellPointFonction} from "./assets/js/components/form-sell-point.js";
+    import {request} from "./assets/js/services/http-request.js";
 
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);

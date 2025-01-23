@@ -133,10 +133,14 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $res = sirenne_api(URL_SIRET, API_SIRENNE_KEY, $siretNumber);
                 if(is_string($res)) {
-                    http_reponse_error($res);
+                    http_reponse_error('SIRET Number Error');
                     exit();
                 }
                 $codePostal = commune_api($res['etablissement']['adresseEtablissement']['codePostalEtablissement']);
+                if(is_string($codePostal)) {
+                    http_reponse_error('Postal Code Error');
+                    exit();
+                }
                 $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
                     $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
                 $jsonResponse = json_encode([

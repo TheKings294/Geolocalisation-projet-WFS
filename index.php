@@ -67,6 +67,7 @@
             ?>
         </header>
         <main>
+            <div id="alert-message"></div>
             <div class="container">
                 <?php
                     if(isset($_SESSION['auth'])) {

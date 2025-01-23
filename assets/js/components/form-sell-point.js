@@ -94,6 +94,7 @@ const navBtnFuntion = (value) => {
                     formElement.reportValidity()
                     return false
                 } else if (i === 1) {
+                    document.querySelector('#alert-message').innerHTML = ''
                     disabledBtn('next', true)
                     document.querySelector('#next-btn').classList.add('d-none')
                 }
@@ -104,6 +105,13 @@ const navBtnFuntion = (value) => {
             } else {
                 if(formElement.checkValidity() === false) {
                     formElement.reportValidity()
+                    document.querySelector('#alert-message').innerHTML = '<div class="alert alert-warning" role="alert">\n' +
+                        '  Vous devez remplir le formulaire' +
+                        '</div>\n'
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Smooth scrolling
+                    });
                     return false
                 }
                 if(i - 1 === 0) {
@@ -112,6 +120,7 @@ const navBtnFuntion = (value) => {
                     disabledBtn('next', false)
                     document.querySelector('#next-btn').classList.remove('d-none')
                 }
+                document.querySelector('#alert-message').innerHTML = ''
                 updateTabsAndButton(i, i-1)
                 updateProgressBar(FORM_PROGRESS_BAR_UPDATE * (i-1))
                 return false
@@ -304,8 +313,10 @@ const handelSireneButtonByLength = () => {
                     addressElement.setAttribute('data-dep', data.departement)
                     setMarker(null,data.coorX, data.coorY, '#27742d')
                     setView(data.coorY, data.coorX, 20)
-                    document.querySelector('#sirene-api-btn').innerHTML = 'SIRET API'
+                } else if (res.hasOwnProperty('error')) {
+                    toast(res.error, 'text-bg-danger')
                 }
+                document.querySelector('#sirene-api-btn').innerHTML = 'SIRET API'
             })
         }
     })

@@ -31,6 +31,12 @@ Géolocalisation-projet-WFS est un projet de cours en développement web full st
 ## Contributeurs
 - **Julien Gidel** : Assistance pour le traitement des données GeoJSON.
 
+## Mot de passe admin
+Pour vous conecter a l'appli apres sont integration 
+
+- **Adresse mail** : admin@admin.com
+- **Mot de passe** : admin
+
 ## Licence
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 

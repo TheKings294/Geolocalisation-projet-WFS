@@ -30,7 +30,7 @@
         }
         const loginResult = await login(formLogin)
 
-        if(loginResult.hasOwnProperty('authentication')) {
+        if(loginResult.hasOwnProperty('success')) {
             toast('authentication successful', 'text-bg-success')
             document.location.href='index.php'
         } else if (loginResult.hasOwnProperty('error')) {

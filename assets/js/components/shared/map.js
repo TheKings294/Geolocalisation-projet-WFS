@@ -1,4 +1,10 @@
 let map
+let info = L.control();
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+};
 export const setMap = (x, y , zoom) => {
     map = L.map('map').setView([x, y], zoom)
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -31,7 +37,30 @@ const svgMarker = (color) => {
 export const setView = (x, y, zoom) => {
     map.setView([y, x], zoom)
 }
-export const setPolygon = (latLang) => {
-    let polygon = L.polygon(latLang, {color: 'blue'}).addTo(map)
-    map.fitBounds(polygon.getBounds());
+export const setPolygon = (latLang, name) => {
+    info.update = function (props) {
+        this._div.innerHTML = '<h4>Departement name</h4>' +  (props ?
+            '<b>' + props + '</b>'
+            : 'Hover over a state');
+    };
+    info.addTo(map);
+
+    let polygon = L.polygon(latLang, {
+        fillColor: 'bleu',
+        color: 'blue',
+        dashArray: '10',
+    }).addTo(map)
+
+    polygon.on({
+        mouseover: function () {
+            info.update(name || 'Unknown')
+        },
+        mouseout: function () {
+            info.update()
+        },
+        click: zoomToFeature,
+    })
+}
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
 }

@@ -49,3 +49,21 @@ function updatePassword($pdo, $id, $password): bool | string
         return $e->getMessage();
     }
 }
+function verifEmail(PDO $pdo, string $email, int $id = null): array | string
+{
+    $query = "SELECT COUNT(*) AS usernb FROM users WHERE email = :email";
+    if($id != null) {
+        $query .= " AND id <> :id";
+    }
+    try {
+        $stmt = $pdo->prepare($query);
+        $stmt->bindValue(":email", $email, PDO::PARAM_STR);
+        if($id != null) {
+            $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetch();
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}

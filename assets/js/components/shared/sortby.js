@@ -1,12 +1,12 @@
 import {refreshPage} from "./list.js";
 
 
-export const sortFunction = async (page, situation) => {
+export const sortFunction = async (page, situation, editLink) => {
     const listHead = document.querySelectorAll('.head')
     const inpageBtn = document.querySelectorAll('.page-link')
     for (let i = 0; i < listHead.length; i++) {
         listHead[i].addEventListener('click', async () => {
-            await refreshPage(page, situation, listHead[i].getAttribute('data-component'), listHead[i].getAttribute('data-sens'), listHead[i].getAttribute('data-action'))
+            await refreshPage(page, situation, listHead[i].getAttribute('data-component'), listHead[i].getAttribute('data-sens'), listHead[i].getAttribute('data-action'), editLink)
             if(listHead[i].getAttribute('data-sens') === 'ASC') {
                 listHead[i].setAttribute('data-sens', 'DESC')
             } else if (listHead[i].getAttribute('data-sens') === 'DESC') {

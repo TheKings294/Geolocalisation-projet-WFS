@@ -27,9 +27,7 @@
             setMarker(message, parseFloat(sellPoint.result[i].coordonate_y), parseFloat(sellPoint.result[i].coordonate_x), color)
         }
         for (let i = 0; i < departement.result.length; i++) {
-            console.log('nom', departement.result[i].name, 'json', JSON.parse(departement.result[i].polygon_json));
-            setPolygon(JSON.parse(departement.result[i].polygon_json))
+            setPolygon(JSON.parse(departement.result[i].polygon_json), departement.result[i].name)
         }
-        setView(47.16, 4.68, 6)
     })
 </script>

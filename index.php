@@ -3,6 +3,7 @@
     require 'Includes/database.php';
     require 'Includes/functions.php';
     require 'Includes/constant.php';
+    require 'Includes/http-response.php';
 
     if(isset($_GET["disconect"])) {
         session_destroy();

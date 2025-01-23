@@ -15,19 +15,24 @@ export const formSPFuntion = async () => {
     await getGroup()
     newGroupBtn.addEventListener('click', () => {
         modal(modalForm, 'Create group', 'Create Group Form')
+        handelModalBtnGroup()
     })
     handelBtn()
     sendForm('new')
     autocompletion()
-    handelModalBtn()
 }
 export const editSellPointFonction = async (id) => {
     handelBtn()
     const res = await request('form-sell-point', 'get', null, null, null, null, 'GET', id)
+    const newGroupBtn = document.querySelector('#modal-open')
     if(res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
+    newGroupBtn.addEventListener('click', () => {
+        modal(modalForm, 'Create group', 'Create Group Form')
+        handelModalBntInsee()
+    })
     await getGroup()
     setMap(res.result.coordonate_y, res.result.coordonate_x, 13)
     setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
@@ -43,11 +48,11 @@ const getGroup = async () => {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
-    console.log(groupData)
-    for (let i = 0; i < groupData.data.length; i++) {
+    dataList.innerHTML = ''
+    for (let i = 0; i < groupData.result.length; i++) {
         const optionElement = document.createElement('option')
-        optionElement.setAttribute('value', groupData.data[i].id)
-        const textElement = document.createTextNode(groupData.data[i].name)
+        optionElement.setAttribute('value', groupData.result[i].id)
+        const textElement = document.createTextNode(groupData.result[i].name)
         optionElement.appendChild(textElement)
         optionElement.classList.add('list-item')
         dataList.appendChild(optionElement)
@@ -136,6 +141,7 @@ const sendForm = (action) => {
         const timeInputs = document.querySelectorAll('.time')
         let data = new FormData()
         let id
+        let tab
         data.append('name', document.querySelector('#name').value)
         data.append('managerName', document.querySelector('#manager-name').value)
         data.append('siret', document.querySelector('#siret-number').value)
@@ -150,11 +156,28 @@ const sendForm = (action) => {
         } else {
             id = null
         }
-
-        for (let i = 0; i < timeInputs.length; i++) {
-            data.append(`time${i}`, timeInputs[i].value)
+        let j = 0
+        for (let i = 0; i < WEEK_DAY.length; i++) {
+            if(timeInputs[j].value === null && timeInputs[j+1].value === null) {
+                tab.push({
+                    [WEEK_DAY[i]]: {
+                        ouverture: 'fermer',
+                        fermeture: 'fermer',
+                    }
+                })
+            } else {
+                tab.push({
+                    [WEEK_DAY[i]]: {
+                        ouverture: timeInputs[j].value,
+                        fermeture: timeInputs[j+1].value,
+                    }
+                })
+            }
+            j += 2
         }
+        data.append('time', JSON.stringify(tab))
         data.append('image', document.querySelector('#img').files[0])
+        console.log(tab)
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
         if(res.hasOwnProperty('success')) {
@@ -213,7 +236,7 @@ const autocompletion = () => {
         }
     })
 }
-const handelModalBtn = () => {
+const handelModalBtnGroup = () => {
     document.querySelector('#modal-btn')?.addEventListener('click', async () => {
         const formModal = document.querySelector('#form-modal')
         if(formModal.checkValidity() === false) {
@@ -222,12 +245,20 @@ const handelModalBtn = () => {
         }
         const formData = new FormData
         formData.append('name', formModal.querySelector('#group-name').value)
-        const res = await request()
+        formData.append('color', formModal.querySelector('#color-group').value)
+        const res = await request('groups', 'new', null, null, null, formData, 'POST', null)
         if(res.hasOwnProperty('success')) {
             toast('Group created', 'text-bg-success')
             closeModal()
+            await getGroup()
+            document.querySelector('#modal-btn').removeEventListener('click', () => {})
+        } else if (res.hasOwnProperty('error')) {
+            toast(res.error, 'text-bg-danger')
         }
     })
+}
+const handelModalBntInsee = () => {
+
 }
 const showSellPointInfo = (sell) => {
     document.querySelector('#name').setAttribute('value', sell.name)

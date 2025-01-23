@@ -35,8 +35,8 @@ const handelBtn = (action, id = null) => {
                 const res = await setUserInfo(id, form)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
-                } else if (res.hasOwnProperty('successfull')) {
-                    toast(res.successfull, 'text-bg-success')
+                } else if (res.hasOwnProperty('success')) {
+                    toast(res.success, 'text-bg-success')
                 }
             })
             break
@@ -47,8 +47,8 @@ const handelBtn = (action, id = null) => {
                 const res = await setUser(form)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
-                } else if (res.hasOwnProperty('successfull')) {
-                    toast(res.successfull, 'text-bg-success')
+                } else if (res.hasOwnProperty('success')) {
+                    toast(res.success, 'text-bg-success')
                 }
             })
             break

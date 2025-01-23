@@ -14,12 +14,25 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         case 'getall':
             $res = getGroups($pdo);
             if(!is_array($res)) {
-                header('Content-type: application/json');
-                json_encode(['error' => $res]);
+                http_reponse_error($res);
                 exit();
             }
-            header('Content-type: application/json');
-            echo json_encode(['data' => $res]);
+            http_response_result($res);
+            break;
+        case 'new':
+            $name = isset($_POST['name']) ? cleanCodeString($_POST['name']) : null;
+            $color = isset($_POST['color']) ? cleanCodeString($_POST['color']) : null;
+
+            if(empty($name) || empty($color)) {
+                http_reponse_error("Empty group name or color");
+                exit();
+            }
+            $res = setGroups($pdo, $name, $color);
+            if (is_string($res)) {
+                http_reponse_error($res);
+                exit();
+            }
+            http_reponse_success();
             break;
     }
     exit();

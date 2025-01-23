@@ -74,7 +74,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 try {
-    $pdo = new PDO('mysql:host='.$_ENV['BDD_URL_SCRIPT'] . ';dbname=geoloc_projet;port='. $_ENV['BDD_PORT_SCRIPT'],
+    $pdo = new PDO('mysql:host='.$_ENV['BDD_URL_SCRIPT'] . ';dbname=' . $_ENV['BDD_NAME'] .';port='. $_ENV['BDD_PORT_SCRIPT'],
         $_ENV['BDD_USERNAME'], $_ENV['BDD_PASSWORD']);
 } catch (Exception $e) {
     $error[] = "BDD conect error : {$e->getMessage()}";

@@ -9,3 +9,15 @@ function getGroups($pdo): string | array
         return $e->getMessage();
     }
 }
+function setGroups($pdo, $name, $color): bool | string
+{
+    try {
+        $stmt = $pdo->prepare("INSERT INTO `groups` (`name`, `color`) VALUES (:name, :color)");
+        $stmt->bindParam(":name", $name);
+        $stmt->bindParam(":color", $color);
+        $stmt->execute();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}

@@ -131,7 +131,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     http_reponse_error('Siret Number Required');
                     exit();
                 }
-                $res = sirenne_api(URL_SIRET, API_SIRENNE_KEY, $siretNumber);
+                $res = sirenne_api(URL_SIRET, $_ENV['SIRENE_API_KEY'], $siretNumber);
                 if(is_string($res)) {
                     http_reponse_error('SIRET Number Error');
                     exit();

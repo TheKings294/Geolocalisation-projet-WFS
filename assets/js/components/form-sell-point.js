@@ -39,7 +39,6 @@ export const editSellPointFonction = async (id) => {
     setView(res.result.coordonate_x, res.result.coordonate_y, 20)
     document.querySelector('#img').required = false
     showSellPointInfo(res.result)
-    removeImage()
     sendForm('edit')
 }
 const getGroup = async () => {
@@ -142,6 +141,7 @@ const sendForm = (action) => {
         const timeInputs = document.querySelectorAll('.time')
         let data = new FormData()
         let id
+        let tab
         data.append('name', document.querySelector('#name').value)
         data.append('managerName', document.querySelector('#manager-name').value)
         data.append('siret', document.querySelector('#siret-number').value)
@@ -156,11 +156,28 @@ const sendForm = (action) => {
         } else {
             id = null
         }
-
-        for (let i = 0; i < timeInputs.length; i++) {
-            data.append(`time${i}`, timeInputs[i].value)
+        let j = 0
+        for (let i = 0; i < WEEK_DAY.length; i++) {
+            if(timeInputs[j].value === null && timeInputs[j+1].value === null) {
+                tab.push({
+                    [WEEK_DAY[i]]: {
+                        ouverture: 'fermer',
+                        fermeture: 'fermer',
+                    }
+                })
+            } else {
+                tab.push({
+                    [WEEK_DAY[i]]: {
+                        ouverture: timeInputs[j].value,
+                        fermeture: timeInputs[j+1].value,
+                    }
+                })
+            }
+            j += 2
         }
+        data.append('time', JSON.stringify(tab))
         data.append('image', document.querySelector('#img').files[0])
+        console.log(tab)
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
         if(res.hasOwnProperty('success')) {
@@ -258,7 +275,6 @@ const showSellPointInfo = (sell) => {
     }
     document.querySelector('#img-view').innerHTML = `
     <img src="./uploads/${sell.img}" class="img-thumbnail" alt="Image du restaurant" width="200px">
-    <a href="#"><i class="fa-solid fa-times text-danger ms-1" id="remove-img-btn" data-id="${sell.id}"></i></a>
     `
     document.querySelector('#address').setAttribute('data-x', sell.coordonate_x)
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
@@ -269,16 +285,4 @@ const showSellPointInfo = (sell) => {
             groupElement[i].selected = true
         }
     }
-}
-const removeImage = () => {
-    document.querySelector('#remove-img-btn')?.addEventListener('click', async (e) => {
-        const id = e.target.dataset.id
-        const res = await request('sell-point', 'delet-img', null, null, null, null, 'GET', id)
-        if (res.hasOwnProperty('error')) {
-            toast(res.error, 'text-bg-danger')
-        } else if (res.hasOwnProperty('success')) {
-            toast('image suprimer', 'text-bg-success')
-        }
-    })
-
 }

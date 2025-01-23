@@ -48,8 +48,6 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             }
             http_reponse_success();
             break;
-        case 'delete-img':
-            break;
     }
     exit();
 }

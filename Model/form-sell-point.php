@@ -10,7 +10,7 @@ function setNewSellPoint(
     string $img,
     string $manager,
     $hourly,
-    string $departement,
+    int $departement,
     string $x,
     string $y,
     int | null $group = null)
@@ -19,7 +19,7 @@ function setNewSellPoint(
         $group = null;
     }
     try {
-        $stmt = $pdo->prepare('INSERT INTO sell_point (name, siret, address, img, manager, hourly, department, coordonate_x, coordonate_y, group_id) 
+        $stmt = $pdo->prepare('INSERT INTO sell_point (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
 VALUES (:name, :siret, :address, :img, :manger, :hourly, :departement, :x, :y, :group_id)');
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':siret', $siret);
@@ -27,7 +27,7 @@ VALUES (:name, :siret, :address, :img, :manger, :hourly, :departement, :x, :y, :
         $stmt->bindValue(':img', $img);
         $stmt->bindValue(':manger', $manager);
         $stmt->bindValue(':hourly', $hourly);
-        $stmt->bindValue(':departement', $departement);
+        $stmt->bindValue(':departement', $departement, PDO::PARAM_INT);
         $stmt->bindValue(':x', $x);
         $stmt->bindValue(':y', $y);
         $stmt->bindValue(':group_id', $group ?? null, PDO::PARAM_INT);
@@ -69,7 +69,7 @@ function updateSellPoint(
     string | null $img,
     string $manager,
     $hourly,
-    string $departement,
+    int $departement,
     string $x,
     string $y,
     int | null $group = null): bool | string
@@ -78,7 +78,7 @@ function updateSellPoint(
     if($img !== null) {
         $url .= 'img = :img,';
     }
-    $url .= 'manager = :manager, hourly = :hourly, department = :departement, coordonate_x = :x, coordonate_y = :y, group_id = :group_id WHERE id = :id';
+    $url .= 'manager = :manager, hourly = :hourly, department_id = :departement, coordonate_x = :x, coordonate_y = :y, group_id = :group_id WHERE id = :id';
     try {
         $stmt = $pdo->prepare($url);
         $stmt->bindValue(':name', $name);
@@ -89,13 +89,37 @@ function updateSellPoint(
         }
         $stmt->bindValue(':manager', $manager);
         $stmt->bindValue(':hourly', $hourly);
-        $stmt->bindValue(':departement', $departement);
+        $stmt->bindValue(':departement', $departement, PDO::PARAM_INT);
         $stmt->bindValue(':x', $x);
         $stmt->bindValue(':y', $y);
         $stmt->bindValue(':group_id', $group ?? null, PDO::PARAM_INT);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+function deletImage(PDO $pdo, int $id): bool | string
+{
+    try {
+        $stmt = $pdo->prepare('UPDATE sell_point SET img = :img WHERE id = :id');
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':img', null, PDO::PARAM_NULL);
+        $stmt->execute();
+        return true;
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+function getDepartement(PDO $pdo, string $name): array | string
+{
+    try {
+        $stmt = $pdo->prepare('SELECT id FROM department WHERE depart_num = :name');
+        $stmt->bindValue(':name', $name);
+        $stmt->execute();
+        $res = $stmt->fetch();
+        return $res;
     } catch (Exception $e) {
         return $e->getMessage();
     }

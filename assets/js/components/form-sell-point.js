@@ -20,6 +20,7 @@ export const formSPFuntion = async () => {
     handelBtn()
     sendForm('new')
     autocompletion()
+    handelSireneButtonByLength()
 }
 export const editSellPointFonction = async (id) => {
     handelBtn()
@@ -40,6 +41,7 @@ export const editSellPointFonction = async (id) => {
     document.querySelector('#img').required = false
     showSellPointInfo(res.result)
     sendForm('edit')
+    handelSireneButtonByLength()
 }
 const getGroup = async () => {
     const dataList = document.querySelector('#groupList')
@@ -49,6 +51,7 @@ const getGroup = async () => {
         return false
     }
     dataList.innerHTML = ''
+    dataList.innerHTML = '<option selected class="list-item" value="null">--Group--</option>'
     for (let i = 0; i < groupData.result.length; i++) {
         const optionElement = document.createElement('option')
         optionElement.setAttribute('value', groupData.result[i].id)
@@ -222,8 +225,6 @@ const autocompletion = () => {
                     autoCompleteJS.input.value = selection.label;
                     const res = await addressAutoCompletion(document.querySelector('#address').value.replace(" ", "+"))
                     const resDep = await getDepartement(res.features[0].properties.postcode)
-                    console.log('x =',res.features[0].geometry.coordinates[0])
-                    console.log('y =',res.features[0].geometry.coordinates[1])
                     setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
                         '#27742d')
                     setView(res.features[0].geometry.coordinates[0], res.features[0].geometry.coordinates[1], 20)
@@ -285,4 +286,27 @@ const showSellPointInfo = (sell) => {
             groupElement[i].selected = true
         }
     }
+}
+const handelSireneButtonByLength = () => {
+    document.querySelector('#siret-number')?.addEventListener('keydown', (e) => {
+        document.querySelector('#sirene-api-btn').disabled = true
+        if(e.target.value.length === 14) {
+            document.querySelector('#sirene-api-btn').disabled = false
+            document.querySelector('#sirene-api-btn')?.addEventListener('click', async () => {
+                document.querySelector('#sirene-api-btn').innerHTML = 'Loading ...'
+                const res = await request('form-sell-point', 'insee-api', null, null, null, null, 'GET', null, document.querySelector('#siret-number').value)
+                if (res.hasOwnProperty('result')) {
+                    const data = JSON.parse(res.result)
+                    const addressElement = document.querySelector('#address')
+                    addressElement.setAttribute('value', data.address)
+                    addressElement.setAttribute('data-x', data.coorX)
+                    addressElement.setAttribute('data-y', data.coorY)
+                    addressElement.setAttribute('data-dep', data.departement)
+                    setMarker(null,data.coorX, data.coorY, '#27742d')
+                    setView(data.coorY, data.coorX, 20)
+                    document.querySelector('#sirene-api-btn').innerHTML = 'SIRET API'
+                }
+            })
+        }
+    })
 }

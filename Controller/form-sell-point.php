@@ -125,6 +125,33 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     http_reponse_success();
                 }
                 break;
+            case 'insee-api':
+                $siretNumber = isset($_GET['siret']) ? cleanCodeString($_GET['siret']) : null;
+                if(empty($siretNumber)) {
+                    http_reponse_error('Siret Number Required');
+                    exit();
+                }
+                $res = sirenne_api(URL_SIRET, API_SIRENNE_KEY, $siretNumber);
+                if(is_string($res)) {
+                    http_reponse_error($res);
+                    exit();
+                }
+                $codePostal = commune_api($res['etablissement']['adresseEtablissement']['codePostalEtablissement']);
+                $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
+                    $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
+                $jsonResponse = json_encode([
+                    'address' => $res['etablissement']['adresseEtablissement']['numeroVoieEtablissement'] . ' ' .
+                        $res['etablissement']['adresseEtablissement']['typeVoieEtablissement'] . ' ' .
+                        $res['etablissement']['adresseEtablissement']['libelleVoieEtablissement'] . ' ' .
+                        $res['etablissement']['adresseEtablissement']['codePostalEtablissement'] . ' ' .
+                        $res['etablissement']['adresseEtablissement']['libelleCommuneEtablissement'] ,
+                    'siret' => $res['etablissement']['siret'],
+                    'departement' => $codePostal[0]['departement']['code'],
+                    'coorX' => $latPoint[0],
+                    'coorY' => $latPoint[1],
+                ]);
+                http_response_result($jsonResponse);
+                break;
         }
         exit();
     }

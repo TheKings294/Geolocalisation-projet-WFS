@@ -1,4 +1,4 @@
-export const request = async (component, action, who = null, sens = null, page = 1, form = null, methode, id = null) => {
+export const request = async (component, action, who = null, sens = null, page = 1, form = null, methode, id = null, siret = null) => {
     let url = `index.php?component=${component}&action=${action}`
     let data = null
     if(action !== null && sens !== null) {
@@ -9,6 +9,9 @@ export const request = async (component, action, who = null, sens = null, page =
     }
     if(id !== null) {
         url += `&id=${id}`
+    }
+    if(siret !== null) {
+        url += `&siret=${siret}`
     }
     const res = await fetch(url, {
         method: methode,

@@ -79,6 +79,6 @@
         ?>
         <script src="Includes/bootstrap/bootstrap.bundle.min.js"></script>
         <script src="Includes/leaflet/leaflet.js"></script>
-        <script src="Includes/autoComplete.js-10.2.9/dist/autoComplete.js"></script>
+        <script src="Includes/autoComplete.js-10.2.9/autoComplete.js"></script>
     </body>
 </html>

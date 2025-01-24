@@ -1,6 +1,6 @@
 import {request} from "../services/http-request.js";
 import {toast} from "./shared/toats.js";
-import {setMap, setMarker, setView} from "./shared/map.js";
+import {deletMarker, hasMarker, setMap, setMarker, setView} from "./shared/map.js";
 import {updateProgressBar} from "./shared/progress-bar.js";
 import {FORM_PROGRESS_BAR_UPDATE, WEEK_DAY} from "./shared/constant.js";
 import {addressAutoCompletion, getDepartement} from "../services/form-sell-point.js";
@@ -8,6 +8,7 @@ import {closeModal, modal} from "./shared/modal.js";
 
 const url = new URL(window.location.href);
 const params = url.searchParams;
+let marker
 
 export const formSPFuntion = async () => {
     const newGroupBtn = document.querySelector('#modal-open')
@@ -230,11 +231,15 @@ const autocompletion = () => {
         events: {
             input: {
                 selection: async (event) => {
+                    const checkMarker = hasMarker()
+                    if (checkMarker === true) {
+                        deletMarker(marker)
+                    }
                     const selection = event.detail.selection.value;
                     autoCompleteJS.input.value = selection.label;
                     const res = await addressAutoCompletion(document.querySelector('#address').value.replace(" ", "+"))
                     const resDep = await getDepartement(res.features[0].properties.postcode)
-                    setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
+                     marker = setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
                         '#27742d')
                     setView(res.features[0].geometry.coordinates[0], res.features[0].geometry.coordinates[1], 20)
                     const inputElement = document.querySelector('#address')

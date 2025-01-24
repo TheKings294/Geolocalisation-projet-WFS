@@ -190,10 +190,8 @@
     <button class="btn btn-success text-warning" id="next-btn">Next</button>
 </div>
 <script src="./assets/js/components/form-sell-point.js" type="module"></script>
-<script src="./assets/js/services/http-request.js" type="module"></script>
 <script type="module">
     import {formSPFuntion, editSellPointFonction} from "./assets/js/components/form-sell-point.js";
-    import {request} from "./assets/js/services/http-request.js";
 
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);

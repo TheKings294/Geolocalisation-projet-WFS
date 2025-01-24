@@ -38,22 +38,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <link
-                href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-                rel="stylesheet"
-                integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-                crossorigin="anonymous">
-        <link
-                rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-                integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer" />
-        <link
-                rel="stylesheet"
-                href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-                integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-                crossorigin="" />
+        <link rel="stylesheet" href="./Includes/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="Includes/fontawsome/css/all.min.css">
+        <link rel="stylesheet" href="./Includes/leaflet/leaflet.css">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="icon" href="./favicon.ico">
         <title>Projet Géolocalisation</title>
@@ -90,16 +77,8 @@
             require './_partials/spinner.html';
             require './_partials/modal.html';
         ?>
-        <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous">
-        </script>
-        <script
-                src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                crossorigin="">
-        </script>
+        <script src="Includes/bootstrap/bootstrap.bundle.min.js"></script>
+        <script src="Includes/leaflet/leaflet.js"></script>
         <script src="Includes/autoComplete.js-10.2.9/dist/autoComplete.js"></script>
     </body>
 </html>

@@ -6,6 +6,10 @@ require './vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use Dotenv\Dotenv;
+use Symfony\Component\Stopwatch\Stopwatch;
+
+$stopwatch = new Stopwatch();
+$stopwatch->start('my-event');
 
 $long_time = json_encode([
     'Lundi' => [
@@ -72,6 +76,8 @@ $short_time = json_encode([
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
+$client = new Client();
+$faker = Faker\Factory::create('fr_FR');
 
 try {
     $pdo = new PDO('mysql:host='.$_ENV['BDD_URL_SCRIPT'] . ';dbname=' . $_ENV['BDD_NAME'] .';port='. $_ENV['BDD_PORT_SCRIPT'],
@@ -80,41 +86,19 @@ try {
     $error[] = "BDD conect error : {$e->getMessage()}";
 }
 
-$client = new Client();
 
-$faker = Faker\Factory::create('fr_FR');
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
 
-/*try {
-    $stmt = $pdo->prepare('TRUNCATE TABLE department');
-    $stmt->execute();
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
+$pdo->exec('TRUNCATE TABLE users');
+$pdo->exec('TRUNCATE TABLE `groups`');
+$pdo->exec('TRUNCATE TABLE sell_point');
+$pdo->exec('TRUNCATE TABLE department');
 
-try {
-    $stmt = $pdo->prepare('TRUNCATE TABLE `groups`');
-    $stmt->execute();
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
 
-try {
-    $stmt = $pdo->prepare('TRUNCATE TABLE `sell_point`');
-    $stmt->execute();
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
-
-try {
-    $stmt = $pdo->prepare('TRUNCATE TABLE `users`');
-    $stmt->execute();
-} catch (Exception $e) {
-    echo $e->getMessage();
-}*/
-
+$stmt = $pdo->prepare('INSERT INTO `groups` (name, color) VALUES (:name, :color)');
 for ($i = 0; $i < 10; $i++) {
     try {
-        $stmt = $pdo->prepare('INSERT INTO `groups` (name, color) VALUES (:name, :color)');
         $stmt->bindValue(':name', $faker->company());
         $stmt->bindValue(':color', $faker->hexColor());
         $stmt->execute();
@@ -124,11 +108,12 @@ for ($i = 0; $i < 10; $i++) {
     }
 }
 
+$stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
+
 for($i = 0; $i < 50; $i++) {
     try {
-        $stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
         $stmt->bindValue(':email', $faker->email());
-        $stmt->bindValue(':password', password_hash($faker->password(), PASSWORD_DEFAULT));
+        $stmt->bindValue(':password', '$2y$10$UED/HmcickyPq6wU9zsky.my9ICaywAaT0RHcsgBvii9lNZPQWXNK');
         $stmt->bindValue(':is_active', $faker->numberBetween(0, 1), PDO::PARAM_BOOL);
         $stmt->execute();
     } catch (Exception $e) {
@@ -148,24 +133,9 @@ try {
     exit();
 }
 
-
-function treatAsMultiPolygon(array $multipolygon) : array {
-    $data = [];
-    foreach($multipolygon as $key => $polygon) {
-        $data[$key] = treatAsPolygon($polygon);
-    }
-    return $data;
-}
-
-function treatAsPolygon(array $polygon) : array {
-    $data = [];
-    foreach($polygon as $key => $coordinates) {
-        $data[$key] = array_reverse($coordinates);
-    }
-    return $data;
-}
-
 $jsonDep = json_decode(file_get_contents(__DIR__ . '/departements-avec-outre-mer.geojson'));
+
+$stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polygon_json)');
 
 foreach ($jsonDep->features as $key) {
     try {
@@ -188,7 +158,6 @@ foreach ($jsonDep->features as $key) {
         }
 
         try {
-            $stmt = $pdo->prepare('INSERT INTO `department` (name, depart_num, polygon_json) VALUES (:name, :depart_num, :polygon_json)');
             $stmt->bindValue(':name', $key->properties->nom);
             $stmt->bindValue(':depart_num', $key->properties->code);
             $stmt->bindValue(':polygon_json', json_encode($data));
@@ -203,38 +172,34 @@ foreach ($jsonDep->features as $key) {
     }
 }
 
-for ($i = 0; $i < 30; $i++) {
-     $Datas = getAddress($faker, $client);
-     $datas = $Datas[1];
-     $data = $Datas[0];
-    if($datas > '977' || $datas === '00') {
-        $Datas = getAddress($faker, $client);
-        $datas = $Datas[1];
-        $data = $Datas[0];
-    }
+$stmte = $pdo->prepare('SELECT id , name FROM `department` WHERE `depart_num` = :departement');
+$stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
+VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
+
+$sellPointContent = getAddress($client);
+
+for ($i = 1; $i < 29; $i++) {
+    $line = explode(';', end($sellPointContent[$i]));
     try {
-        $stmt = $pdo->prepare('SELECT id FROM `department` WHERE `depart_num` = :departement');
-        $stmt->bindValue(':departement', $datas, PDO::PARAM_STR);
-        $stmt->execute();
-        $res = $stmt->fetch();
+        $stmte->bindValue(':departement', $line[1]);
+        $stmte->execute();
+        $res = $stmte->fetch();
     } catch (Exception $e) {
         echo $e->getMessage();
     }
     $imgUrlRandom = $faker->numberBetween(1,5);
     $hourlyRandom = $faker->numberBetween(1,2);
 
-    $name = 'Mc Donalds ' . $data['features']['0']['properties']['city'];
-    $address = $data['features']['0']['properties']['label'];
+    $name = 'Mc Donalds ' . $line[5];
+    $address = $line[4];
     $imgUrl = 'mcdo'.$imgUrlRandom.'.jpg';
     $hourly = $hourlyRandom === 1 ? $long_time : $short_time;
     $departement = $res['id'];
     $group_id = $faker->numberBetween(1, 10);
-    $x = $data['features']['0']['geometry']['coordinates'][0];
-    $y = $data['features']['0']['geometry']['coordinates'][1];
+    $x = $line[3];
+    $y = $line[2];
 
     try {
-        $stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
-VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':siret', $faker->siret());
         $stmt->bindValue(':address', $address);
@@ -251,42 +216,73 @@ VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :g
         exit();
     }
 }
-
-function getAddress ($faker, $client)  {
-    $adresse = $faker->streetAddress();
-    $adresse = str_replace(" ", "+", $adresse);
-
-    $apiAddress = 'https://api-adresse.data.gouv.fr/search/?q='.$adresse.'&limit=1';
-
-    try {
-        $response = $client->request('GET', $apiAddress);
-        $data = json_decode($response->getBody(), true);
-    } catch (\GuzzleHttp\Exception\RequestException $e) {
-        echo "Erreur lors de l'appel API : " . $e->getMessage();
-        exit();
-    }
-
-    $apiComune = 'https://geo.api.gouv.fr/communes?code='. $data['features']['0']['properties']['citycode'] . '&fields=departement';
-
-    try {
-        $response = $client->request('GET', $apiComune);
-        $datas = json_decode($response->getBody(), true);
-    } catch (\GuzzleHttp\Exception\RequestException $e) {
-        echo "Erreur lors de l'appel API : " . $e->getMessage();
-        exit();
-    }
-    if(!isset($datas['0']['departement']['code'])) {
-        $datas = substr($data['features']['0']['properties']['postcode'], -3, 2);
-    } else {
-        $datas = $datas['0']['departement']['code'];
-    }
-    return [$data, $datas];
-}
-
 function swapLatLng(array $data): array {
     return array_map(function ($coords) {
         return [$coords[1], $coords[0]];
     }, $data);
 }
 
+function treatAsMultiPolygon(array $multipolygon) : array {
+    $data = [];
+    foreach($multipolygon as $key => $polygon) {
+        $data[$key] = treatAsPolygon($polygon);
+    }
+    return $data;
+}
 
+function treatAsPolygon(array $polygon) : array {
+    $data = [];
+    foreach($polygon as $key => $coordinates) {
+        $data[$key] = array_reverse($coordinates);
+    }
+    return $data;
+}
+function getAddress($client)
+{
+  $file = __DIR__ . '/AdresseWFS.csv';
+
+  $url = 'https://api-adresse.data.gouv.fr/search/csv/';
+  try {
+    $response = $client->request('POST', $url, [
+      'multipart' => [
+        [
+          'name' => 'data',
+          'contents' => fopen($file, 'r')
+        ],
+        [
+          'name' => 'columns',
+          'contents' => 'Address'
+        ],
+        [
+          'name' => 'result_columns',
+          'contents' => 'latitude'
+        ],
+        [
+          'name' => 'result_columns',
+          'contents' => 'longitude'
+        ],
+        [
+          'name' => 'result_columns',
+          'contents' => 'result_label'
+        ],
+        [
+          'name' => 'result_columns',
+          'contents' => 'result_city'
+        ]
+      ],
+    ]);
+    $csvContent = $response->getBody();
+  } catch (\GuzzleHttp\Exception\RequestException $e) {
+    echo $e->getMessage();
+  }
+
+  $rows = array_map(function ($line) {
+    return str_getcsv($line, ',', '"', '\\');
+  }, explode("\n", $csvContent));
+
+  return $rows;
+}
+$event = $stopwatch->stop('my-event');
+
+echo 'Duration: ' . $event->getDuration() . " ms\n";
+echo 'Memory Usage: ' . $event->getMemory() . " bytes\n";

@@ -162,6 +162,7 @@ const sendForm = (action) => {
         data.append('coor-x', x)
         data.append('coor-y', y)
         data.append('department', dep)
+        console.log(dep)
 
         if(params.get('action') === "get" && params.has('id')) {
             id = params.get('id')
@@ -291,7 +292,7 @@ const showSellPointInfo = (sell) => {
     `
     document.querySelector('#address').setAttribute('data-x', sell.coordonate_x)
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
-    document.querySelector('#address').setAttribute('data-dep', sell.department)
+    document.querySelector('#address').setAttribute('data-dep', sell.depart_num)
     const groupElement = document.querySelectorAll('.list-item')
     for(let i = 0; i < groupElement.length; i++) {
         if(groupElement[i].value == sell.group_id) {

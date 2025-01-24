@@ -153,8 +153,8 @@ const sendForm = (action) => {
         let dep = adresse.getAttribute('data-dep')
         const timeInputs = document.querySelectorAll('.time')
         let data = new FormData()
-        let id
-        let tab
+        let id = null
+        let tab = []
         data.append('name', document.querySelector('#name').value)
         data.append('managerName', document.querySelector('#manager-name').value)
         data.append('siret', document.querySelector('#siret-number').value)
@@ -171,7 +171,7 @@ const sendForm = (action) => {
         }
         let j = 0
         for (let i = 0; i < WEEK_DAY.length; i++) {
-            if(timeInputs[j].value === null && timeInputs[j+1].value === null) {
+            if(timeInputs[j].value === "" && timeInputs[j+1].value === "") {
                 tab.push({
                     [WEEK_DAY[i]]: {
                         ouverture: 'fermer',
@@ -190,11 +190,10 @@ const sendForm = (action) => {
         }
         data.append('time', JSON.stringify(tab))
         data.append('image', document.querySelector('#img').files[0])
-        console.log(tab)
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
         if(res.hasOwnProperty('success')) {
-            toast(res.success, 'text-bg-success')
+            toast('Action reussi', 'text-bg-success')
             updateProgressBar('100')
             navBtnFuntion(false)
             navBtnFuntion(false)
@@ -302,7 +301,7 @@ const showSellPointInfo = (sell) => {
     }
 }
 const handelSireneButtonByLength = () => {
-    document.querySelector('#siret-number')?.addEventListener('keydown', (e) => {
+    document.querySelector('#siret-number')?.addEventListener('input', (e) => {
         document.querySelector('#sirene-api-btn').disabled = true
         if(e.target.value.length === 14) {
             document.querySelector('#sirene-api-btn').disabled = false

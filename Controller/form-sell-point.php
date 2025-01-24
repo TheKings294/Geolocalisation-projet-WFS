@@ -77,11 +77,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $department = isset($_POST['department']) ? cleanCodeString($_POST['department']) : null;
                 $jsonTime = isset($_POST['time']) ? $_POST['time'] : null;
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
-                $times = [];
 
-                for($i = 0; $i <= 13; $i++) {
-                    $times["time". $i] = isset($_POST['time'.$i]) ? cleanCodeString($_POST['time'.$i]) : null;
-                }
                 $res = verifImage($pdo, $id);
                 if($res['img'] === null && empty($_FILES['image']['name'])) {
                     http_reponse_error('Image Required');
@@ -104,7 +100,11 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
 
                     if(!empty($_FILES['image']['name'])) {
                         $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                        mooveFile($_FILES['image']['name'], $finalFileName);
+                        $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
+                        if ($res === false) {
+                            http_reponse_error('Image can not be uploaded');
+                            exit();
+                        }
                     }
 
                     if(!isset($finalFileName)) {

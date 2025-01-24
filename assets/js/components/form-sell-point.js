@@ -1,6 +1,6 @@
 import {request} from "../services/http-request.js";
 import {toast} from "./shared/toats.js";
-import {setMap, setMarker, setView} from "./shared/map.js";
+import {deletMarker, hasMarker, setMap, setMarker, setView} from "./shared/map.js";
 import {updateProgressBar} from "./shared/progress-bar.js";
 import {FORM_PROGRESS_BAR_UPDATE, WEEK_DAY} from "./shared/constant.js";
 import {addressAutoCompletion, getDepartement} from "../services/form-sell-point.js";
@@ -8,6 +8,7 @@ import {closeModal, modal} from "./shared/modal.js";
 
 const url = new URL(window.location.href);
 const params = url.searchParams;
+let marker
 
 export const formSPFuntion = async () => {
     const newGroupBtn = document.querySelector('#modal-open')
@@ -36,7 +37,7 @@ export const editSellPointFonction = async (id) => {
     })
     await getGroup()
     setMap(res.result.coordonate_y, res.result.coordonate_x, 13)
-    setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
+    marker = setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
     setView(res.result.coordonate_x, res.result.coordonate_y, 20)
     document.querySelector('#img').required = false
     showSellPointInfo(res.result)
@@ -132,7 +133,6 @@ const navBtnFuntion = (value) => {
 const updateTabsAndButton = (now, next) => {
     const formElements = document.querySelectorAll('.tab-pane')
     const formBtnElements = document.querySelectorAll('.nav-form')
-    console.log(formBtnElements)
 
     formElements[now].classList.remove('show', 'active', 'montrer')
     formBtnElements[now].classList.remove('active')
@@ -152,8 +152,8 @@ const sendForm = (action) => {
         let dep = adresse.getAttribute('data-dep')
         const timeInputs = document.querySelectorAll('.time')
         let data = new FormData()
-        let id
-        let tab
+        let id = null
+        let tab = []
         data.append('name', document.querySelector('#name').value)
         data.append('managerName', document.querySelector('#manager-name').value)
         data.append('siret', document.querySelector('#siret-number').value)
@@ -162,6 +162,7 @@ const sendForm = (action) => {
         data.append('coor-x', x)
         data.append('coor-y', y)
         data.append('department', dep)
+        console.log(dep)
 
         if(params.get('action') === "get" && params.has('id')) {
             id = params.get('id')
@@ -170,7 +171,7 @@ const sendForm = (action) => {
         }
         let j = 0
         for (let i = 0; i < WEEK_DAY.length; i++) {
-            if(timeInputs[j].value === null && timeInputs[j+1].value === null) {
+            if(timeInputs[j].value === "" && timeInputs[j+1].value === "") {
                 tab.push({
                     [WEEK_DAY[i]]: {
                         ouverture: 'fermer',
@@ -189,11 +190,10 @@ const sendForm = (action) => {
         }
         data.append('time', JSON.stringify(tab))
         data.append('image', document.querySelector('#img').files[0])
-        console.log(tab)
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
         if(res.hasOwnProperty('success')) {
-            toast(res.success, 'text-bg-success')
+            toast('Action reussi', 'text-bg-success')
             updateProgressBar('100')
             navBtnFuntion(false)
             navBtnFuntion(false)
@@ -230,11 +230,15 @@ const autocompletion = () => {
         events: {
             input: {
                 selection: async (event) => {
+                    const checkMarker = hasMarker()
+                    if (checkMarker === true) {
+                        deletMarker(marker)
+                    }
                     const selection = event.detail.selection.value;
                     autoCompleteJS.input.value = selection.label;
                     const res = await addressAutoCompletion(document.querySelector('#address').value.replace(" ", "+"))
                     const resDep = await getDepartement(res.features[0].properties.postcode)
-                    setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
+                     marker = setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
                         '#27742d')
                     setView(res.features[0].geometry.coordinates[0], res.features[0].geometry.coordinates[1], 20)
                     const inputElement = document.querySelector('#address')
@@ -277,18 +281,18 @@ const showSellPointInfo = (sell) => {
     document.querySelector('#address').setAttribute('value', sell.address)
     const json = JSON.parse(sell.hourly)
     const times = document.querySelectorAll('.time')
+    let j = 0
     for (let i = 0; i <= 13; i+=2) {
-        for (let j = 0; j < 7; j++) {
-            times[i].setAttribute('value', json[WEEK_DAY[j]].ouverture)
-            times[i+1].setAttribute('value', json[WEEK_DAY[j]].fermeture)
-        }
+        times[i].setAttribute('value', json[j][WEEK_DAY[j]].ouverture !== 'fermer' ? json[j][WEEK_DAY[j]].ouverture : '')
+        times[i+1].setAttribute('value', json[j][WEEK_DAY[j]].fermeture !== 'fermer' ? json[j][WEEK_DAY[j]].fermeture: '')
+        j++
     }
     document.querySelector('#img-view').innerHTML = `
     <img src="./uploads/${sell.img}" class="img-thumbnail" alt="Image du restaurant" width="200px">
     `
     document.querySelector('#address').setAttribute('data-x', sell.coordonate_x)
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
-    document.querySelector('#address').setAttribute('data-dep', sell.department)
+    document.querySelector('#address').setAttribute('data-dep', sell.depart_num)
     const groupElement = document.querySelectorAll('.list-item')
     for(let i = 0; i < groupElement.length; i++) {
         if(groupElement[i].value == sell.group_id) {
@@ -297,7 +301,7 @@ const showSellPointInfo = (sell) => {
     }
 }
 const handelSireneButtonByLength = () => {
-    document.querySelector('#siret-number')?.addEventListener('keydown', (e) => {
+    document.querySelector('#siret-number')?.addEventListener('input', (e) => {
         document.querySelector('#sirene-api-btn').disabled = true
         if(e.target.value.length === 14) {
             document.querySelector('#sirene-api-btn').disabled = false
@@ -308,10 +312,14 @@ const handelSireneButtonByLength = () => {
                     const data = JSON.parse(res.result)
                     const addressElement = document.querySelector('#address')
                     addressElement.setAttribute('value', data.address)
-                    addressElement.setAttribute('data-x', data.coorX)
-                    addressElement.setAttribute('data-y', data.coorY)
+                    addressElement.setAttribute('data-x', data.coorY)
+                    addressElement.setAttribute('data-y', data.coorX)
                     addressElement.setAttribute('data-dep', data.departement)
-                    setMarker(null,data.coorX, data.coorY, '#27742d')
+                    const checkMarker = hasMarker()
+                    if (checkMarker === true) {
+                        deletMarker(marker)
+                    }
+                    marker = setMarker(null,data.coorX, data.coorY, '#27742d')
                     setView(data.coorY, data.coorX, 20)
                 } else if (res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')

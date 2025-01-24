@@ -94,66 +94,66 @@
                     <h4 class="text-warning">Monday</h4>
                     <div class="col">
                         <label for="monday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="monday-start" name="monday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="monday-start" name="monday-start">
                     </div>
                     <div class="col">
                         <label for="monday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="monday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="monday-stop" name="monday-stop">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Tuesday</h4>
                     <div class="col">
                         <label for="tuesday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="tuesday-start" name="tuesday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="tuesday-start" name="tuesday-start">
                     </div>
                     <div class="col">
                         <label for="tuesday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="tuesday-stop" name="tuesday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="tuesday-stop" name="tuesday-stop">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Wednesday</h4>
                     <div class="col">
                         <label for="wednesday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="wednesday-start" name="wednesday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="wednesday-start" name="wednesday-start">
                     </div>
                     <div class="col">
                         <label for="wednesday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="wednesday-stop" name="wednesday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="wednesday-stop" name="wednesday-stop">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Thursday</h4>
                     <div class="col">
                         <label for="thursday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="thursday-start" name="thursday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="thursday-start" name="thursday-start">
                     </div>
                     <div class="col">
                         <label for="thursday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="thursday-stop" name="thursday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="thursday-stop" name="thursday-stop">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Friday</h4>
                     <div class="col">
                         <label for="friday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="friday-start" name="friday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="friday-start" name="friday-start">
                     </div>
                     <div class="col">
                         <label for="friday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="friday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="friday-stop" name="monday-stop">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <h4 class="text-warning">Saturday</h4>
                     <div class="col">
                         <label for="saturday-start" class="form-label">Open</label>
-                        <input type="time" class="form-control form-control-sm time" id="saturday-start" name="saturday-start" required>
+                        <input type="time" class="form-control form-control-sm time" id="saturday-start" name="saturday-start">
                     </div>
                     <div class="col">
                         <label for="saturday-stop" class="form-label">Close</label>
-                        <input type="time" class="form-control form-control-sm time" id="saturday-stop" name="monday-stop" required>
+                        <input type="time" class="form-control form-control-sm time" id="saturday-stop" name="monday-stop">
                     </div>
                 </div>
                 <div class="row mb-3" id="sunday">
@@ -190,10 +190,8 @@
     <button class="btn btn-success text-warning" id="next-btn">Next</button>
 </div>
 <script src="./assets/js/components/form-sell-point.js" type="module"></script>
-<script src="./assets/js/services/http-request.js" type="module"></script>
 <script type="module">
     import {formSPFuntion, editSellPointFonction} from "./assets/js/components/form-sell-point.js";
-    import {request} from "./assets/js/services/http-request.js";
 
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);

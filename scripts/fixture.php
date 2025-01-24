@@ -12,66 +12,65 @@ $stopwatch = new Stopwatch();
 $stopwatch->start('my-event');
 
 $long_time = json_encode([
-    'Lundi' => [
+    ['Lundi' => [
         'ouverture' => '08:00',
         'fermeture' => '23:00',
-    ],
-    'Mardi' => [
+    ]],
+    ['Mardi' => [
         'ouverture' => '08:00',
         'fermeture' => '23:00',
-    ],
-    'Mercredi' => [
+    ]],
+    ['Mercredi' => [
         'ouverture' => '08:00',
         'fermeture' => '23:00',
-    ],
-    'Jeudi' => [
+    ]],
+    ['Jeudi' => [
         'ouverture' => '08:00',
         'fermeture' => '23:00',
-    ],
-    'Vendredi' => [
+    ]],
+    ['Vendredi' => [
         'ouverture' => '08:00',
         'fermeture' => '00:00',
-    ],
-    'Samedi' => [
+    ]],
+    ['Samedi' => [
         'ouverture' => '08:00',
         'fermeture' => '00:00',
-    ],
-    'Dimanche' => [
+    ]],
+    ['Dimanche' => [
         'ouverture' => '08:00',
         'fermeture' => '21:00',
-    ]
-
+    ]]
 ]);
 
 $short_time = json_encode([
-    'Lundi' => [
+    ['Lundi' => [
         'ouverture' => '08:00',
         'fermeture' => '22:00',
-    ],
-    'Mardi' => [
+    ]],
+    ['Mardi' => [
         'ouverture' => '08:00',
         'fermeture' => '22:00',
-    ],
-    'Mercredi' => [
+    ]],
+    ['Mercredi' => [
         'ouverture' => '08:00',
         'fermeture' => '22:00',
-    ],
-    'Jeudi' => [
+    ]],
+    ['Jeudi' => [
         'ouverture' => '08:00',
         'fermeture' => '22:00',
-    ],
-    'Vendredi' => [
+    ]],
+    ['Vendredi' => [
         'ouverture' => '08:00',
         'fermeture' => '23:00',
-    ],
-    'Samedi' => [
+    ]],
+    ['Samedi' => [
         'ouverture' => '08:00',
         'fermeture' => '00:00',
-    ],
-    'Dimanche' => [
+    ]],
+    ['Dimanche' => [
         'ouverture' => 'fermer',
         'fermeture' => 'fermer',
-    ]
+    ]]
 ]);
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');

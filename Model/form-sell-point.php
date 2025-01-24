@@ -41,7 +41,8 @@ VALUES (:name, :siret, :address, :img, :manger, :hourly, :departement, :x, :y, :
 function getSellPoint(PDO $pdo, $id): array | string
 {
     try {
-        $stmt = $pdo->prepare('SELECT * FROM sell_point WHERE id = :id');
+        $stmt = $pdo->prepare('
+SELECT sell_point.*, d.depart_num FROM sell_point LEFT JOIN geoloc_projet.department d on d.id = sell_point.department_id WHERE sell_point.id = :id');
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
@@ -112,11 +113,11 @@ function deletImage(PDO $pdo, int $id): bool | string
         return $e->getMessage();
     }
 }
-function getDepartement(PDO $pdo, string $name): array | string
+function getDepartement(PDO $pdo, string $num): array | string
 {
     try {
-        $stmt = $pdo->prepare('SELECT id FROM department WHERE depart_num = :name');
-        $stmt->bindValue(':name', $name);
+        $stmt = $pdo->prepare('SELECT id FROM department WHERE depart_num = :num');
+        $stmt->bindValue(':num', $num);
         $stmt->execute();
         $res = $stmt->fetch();
         return $res;

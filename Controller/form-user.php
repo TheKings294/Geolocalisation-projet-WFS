@@ -54,7 +54,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $email = isset($_POST['email']) ? cleanCodeString($_POST['email']) : null;
             $password = isset($_POST['password']) ? cleanCodeString($_POST['password']) : null;
             $check_password = isset($_POST['check-password']) ? cleanCodeString($_POST['check-password']) : null;
-            $is_active = isset($_POST['is_active']) ? 1 : 0;
+            $is_active = isset($_POST['is-active']);
             $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
 
             if($email === null) {

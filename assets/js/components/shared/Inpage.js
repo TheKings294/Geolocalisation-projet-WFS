@@ -16,7 +16,6 @@ export const getInpage = (total, curentPage, situation, component, sens, action,
 }
 
 export const handleInpageClick = (curentPage, situation, editLink) => {
-    console.log(editLink)
     const nextLink = document.querySelector('#next-link')
     const previousLink = document.querySelector('#prev-link')
     const nbPageLink = document.querySelectorAll('.nb-page-link')

@@ -21,6 +21,7 @@ export const setMarker = (message = null, x , y, colorValue) => {
     if(message !== null) {
         marker.bindPopup(message)
     }
+    return marker
 }
 const svgMarker = (color) => {
     return  L.divIcon({
@@ -63,4 +64,19 @@ export const setPolygon = (latLang, name) => {
 }
 function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
+}
+
+export const hasMarker = () => {
+    let hasMarker = false;
+
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.Marker) {
+            hasMarker = true;
+        }
+    });
+
+    return hasMarker;
+}
+export const deletMarker = (marker) => {
+    marker.remove();
 }

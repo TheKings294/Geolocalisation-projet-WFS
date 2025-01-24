@@ -36,7 +36,7 @@ const handelBtn = (action, id = null) => {
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {
-                    toast(res.success, 'text-bg-success')
+                    toast('User Update', 'text-bg-success')
                 }
             })
             break
@@ -48,7 +48,7 @@ const handelBtn = (action, id = null) => {
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {
-                    toast(res.success, 'text-bg-success')
+                    toast('User Created', 'text-bg-success')
                 }
             })
             break

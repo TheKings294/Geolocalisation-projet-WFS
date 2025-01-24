@@ -37,7 +37,7 @@ export const editSellPointFonction = async (id) => {
     })
     await getGroup()
     setMap(res.result.coordonate_y, res.result.coordonate_x, 13)
-    setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
+    marker = setMarker(null, res.result.coordonate_y, res.result.coordonate_x, '#27742d')
     setView(res.result.coordonate_x, res.result.coordonate_y, 20)
     document.querySelector('#img').required = false
     showSellPointInfo(res.result)
@@ -133,7 +133,6 @@ const navBtnFuntion = (value) => {
 const updateTabsAndButton = (now, next) => {
     const formElements = document.querySelectorAll('.tab-pane')
     const formBtnElements = document.querySelectorAll('.nav-form')
-    console.log(formBtnElements)
 
     formElements[now].classList.remove('show', 'active', 'montrer')
     formBtnElements[now].classList.remove('active')
@@ -281,11 +280,11 @@ const showSellPointInfo = (sell) => {
     document.querySelector('#address').setAttribute('value', sell.address)
     const json = JSON.parse(sell.hourly)
     const times = document.querySelectorAll('.time')
+    let j = 0
     for (let i = 0; i <= 13; i+=2) {
-        for (let j = 0; j < 7; j++) {
-            times[i].setAttribute('value', json[WEEK_DAY[j]].ouverture)
-            times[i+1].setAttribute('value', json[WEEK_DAY[j]].fermeture)
-        }
+        times[i].setAttribute('value', json[j][WEEK_DAY[j]].ouverture !== 'fermer' ? json[j][WEEK_DAY[j]].ouverture : '')
+        times[i+1].setAttribute('value', json[j][WEEK_DAY[j]].fermeture !== 'fermer' ? json[j][WEEK_DAY[j]].fermeture: '')
+        j++
     }
     document.querySelector('#img-view').innerHTML = `
     <img src="./uploads/${sell.img}" class="img-thumbnail" alt="Image du restaurant" width="200px">
@@ -312,10 +311,14 @@ const handelSireneButtonByLength = () => {
                     const data = JSON.parse(res.result)
                     const addressElement = document.querySelector('#address')
                     addressElement.setAttribute('value', data.address)
-                    addressElement.setAttribute('data-x', data.coorX)
-                    addressElement.setAttribute('data-y', data.coorY)
+                    addressElement.setAttribute('data-x', data.coorY)
+                    addressElement.setAttribute('data-y', data.coorX)
                     addressElement.setAttribute('data-dep', data.departement)
-                    setMarker(null,data.coorX, data.coorY, '#27742d')
+                    const checkMarker = hasMarker()
+                    if (checkMarker === true) {
+                        deletMarker(marker)
+                    }
+                    marker = setMarker(null,data.coorX, data.coorY, '#27742d')
                     setView(data.coorY, data.coorX, 20)
                 } else if (res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')

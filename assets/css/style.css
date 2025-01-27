@@ -26,3 +26,6 @@
     margin: 0 0 5px;
     color: #777;
 }
+#autoComplete_list_1 li {
+    list-style: none;
+}

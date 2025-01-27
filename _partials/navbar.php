@@ -23,6 +23,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?component=sell-point">Sell Point</a>
                 </li>
+            </ul>
+            <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?disconect">Disconect</a>
                 </li>

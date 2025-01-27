@@ -1,7 +1,7 @@
 <?php
 function getUsers($pdo, $page, $perPage, $who, $sens)
 {
-    if($page !== 1) {
+    if ($page !== 1) {
         $curentid = $page * $perPage - $perPage;
     }
     $query = "SELECT `id`, `email`, `is_active` FROM `users`";
@@ -12,12 +12,12 @@ function getUsers($pdo, $page, $perPage, $who, $sens)
 
     $query .= " LIMIT $perPage";
 
-    if($page !== 1) {
+    if ($page !== 1) {
         $query .= " OFFSET :idstart";
     }
     try {
         $stmt = $pdo->prepare($query);
-        if($page !== 1) {
+        if ($page !== 1) {
             $stmt->bindParam(":idstart", $curentid, PDO::PARAM_INT);
         }
         $stmt->execute();

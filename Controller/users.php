@@ -4,7 +4,7 @@
  */
 require './Model/users.php';
 
-if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
+if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
     $_SERVER['HTTP_X_REQUESTED_WIDTH'] === 'XMLHttpRequest'
 ) {
     switch ($_GET['action']) {
@@ -13,7 +13,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $who = isset($_GET['who']) ? cleanCodeString($_GET['who']) : null;
             $sens = isset($_GET['sens']) ? cleanCodeString($_GET['sens']) : null;
             $res = getUsers($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens);
-            if(!is_array($res)) {
+            if (!is_array($res)) {
                 http_reponse_error($res);
                 exit();
             }
@@ -21,7 +21,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'page':
             $res = getPageNumbers($pdo);
-            if(!is_array($res)) {
+            if (!is_array($res)) {
                 http_reponse_error($res);
                 exit();
             }
@@ -29,14 +29,14 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'delete':
             $id = isset($_GET['id']) ? intval(cleanCodeString($_GET['id'])) : null;
-            if($id === null) {
+            if ($id === null) {
                 http_reponse_error('id cannot be null');
                 exit();
             } elseif ($id === $_SESSION['userId']) {
                 http_reponse_error('You can t delete your user');
             }
             $res = deleteUser($pdo, $id);
-            if(is_string($res)) {
+            if (is_string($res)) {
                 http_reponse_error($res);
                 exit();
             }

@@ -109,7 +109,7 @@ for ($i = 0; $i < 10; $i++) {
 
 $stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
 
-for($i = 0; $i < 50; $i++) {
+for ($i = 0; $i < 50; $i++) {
     try {
         $stmt->bindValue(':email', $faker->email());
         $stmt->bindValue(':password', '$2y$10$UED/HmcickyPq6wU9zsky.my9ICaywAaT0RHcsgBvii9lNZPQWXNK');

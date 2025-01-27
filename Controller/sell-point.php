@@ -4,7 +4,7 @@
 */
 require './Model/sell-point.php';
 
-if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
+if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
     $_SERVER['HTTP_X_REQUESTED_WIDTH'] === 'XMLHttpRequest'
 ) {
     switch ($_GET['action']) {
@@ -13,7 +13,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $who = isset($_GET['who']) ? cleanCodeString($_GET['who']) : null;
             $sens = isset($_GET['sens']) ? cleanCodeString($_GET['sens']) : null;
             $res = getSellPoint($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens, null);
-            if(!is_array($res)) {
+            if (!is_array($res)) {
                 http_response_result($res);
                 exit();
             }
@@ -21,7 +21,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'page':
             $res = getNbPage($pdo);
-            if(!is_array($res)) {
+            if (!is_array($res)) {
                 http_reponse_error($res);
                 exit();
             }
@@ -29,7 +29,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'get':
             $res = getSellPoint($pdo, null, null, null, null, 1);
-            if(!is_array($res)) {
+            if (!is_array($res)) {
                 http_reponse_error($res);
                 exit();
             }
@@ -37,12 +37,12 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             break;
         case 'delete':
             $id = isset($_GET['id']) ? intval(cleanCodeString($_GET['id'])) : null;
-            if($id === null) {
+            if ($id === null) {
                 http_reponse_error('id cannot be null');
                 exit();
             }
             $res = deleteSellPoint($pdo, $id);
-            if(is_string($res)) {
+            if (is_string($res)) {
                 http_reponse_error($res);
                 exit();
             }

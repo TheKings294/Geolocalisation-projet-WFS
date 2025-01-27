@@ -26,7 +26,7 @@ export const editSellPointFonction = async (id) => {
     handelBtn()
     const res = await request('form-sell-point', 'get', null, null, null, null, 'GET', id)
     const newGroupBtn = document.querySelector('#modal-open')
-    if(res.hasOwnProperty('error')) {
+    if (res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
@@ -53,7 +53,7 @@ const getGroup = async () => {
         null,
         'GET',
         null)
-    if(groupData.hasOwnProperty('error')) {
+    if (groupData.hasOwnProperty('error')) {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
@@ -94,9 +94,9 @@ const navBtnFuntion = (value) => {
     const tabs = document.querySelectorAll('.tab-pane')
 
     for (let i = 0; i < tabs.length; i++) {
-        if(tabs[i].classList.contains('active')) {
+        if (tabs[i].classList.contains('active')) {
             const formElement = tabs[i].querySelector(`#form${i+1}`)
-            if(value === true) {
+            if (value === true) {
                 if(formElement.checkValidity() === false) {
                     formElement.reportValidity()
                     return false
@@ -110,7 +110,7 @@ const navBtnFuntion = (value) => {
                 updateProgressBar(FORM_PROGRESS_BAR_UPDATE * (i+1))
                 return false
             } else {
-                if(formElement.checkValidity() === false) {
+                if (formElement.checkValidity() === false) {
                     formElement.reportValidity()
                     document.querySelector('#alert-message').innerHTML = '<div class="alert alert-warning" role="alert">\n' +
                         '  Vous devez remplir le formulaire' +
@@ -121,7 +121,7 @@ const navBtnFuntion = (value) => {
                     });
                     return false
                 }
-                if(i - 1 === 0) {
+                if (i - 1 === 0) {
                     disabledBtn('prev', true)
                 } else if (i !== 1) {
                     disabledBtn('next', false)
@@ -169,14 +169,14 @@ const sendForm = (action) => {
         data.append('coor-y', y)
         data.append('department', dep)
 
-        if(params.get('action') === "get" && params.has('id')) {
+        if (params.get('action') === "get" && params.has('id')) {
             id = params.get('id')
         } else {
             id = null
         }
         let j = 0
         for (let i = 0; i < WEEK_DAY.length; i++) {
-            if(timeInputs[j].value === "" && timeInputs[j+1].value === "") {
+            if (timeInputs[j].value === "" && timeInputs[j+1].value === "") {
                 tab.push({
                     [WEEK_DAY[i]]: {
                         ouverture: 'fermer',
@@ -197,7 +197,7 @@ const sendForm = (action) => {
         data.append('image', document.querySelector('#img').files[0])
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
-        if(res.hasOwnProperty('success')) {
+        if (res.hasOwnProperty('success')) {
             toast('Action reussi', 'text-bg-success')
             updateProgressBar('100')
             navBtnFuntion(false)
@@ -274,7 +274,7 @@ const autocompletion = () => {
 const handelModalBtnGroup = () => {
     document.querySelector('#modal-btn')?.addEventListener('click', async () => {
         const formModal = document.querySelector('#form-modal')
-        if(formModal.checkValidity() === false) {
+        if (formModal.checkValidity() === false) {
             toast('veuillez remplir le formulaire', 'text-bg-danger')
             return false
         }
@@ -282,7 +282,7 @@ const handelModalBtnGroup = () => {
         formData.append('name', formModal.querySelector('#group-name').value)
         formData.append('color', formModal.querySelector('#color-group').value)
         const res = await request('groups', 'new', null, null, null, formData, 'POST', null)
-        if(res.hasOwnProperty('success')) {
+        if (res.hasOwnProperty('success')) {
             toast('Group created', 'text-bg-success')
             closeModal()
             await getGroup()
@@ -315,7 +315,7 @@ const showSellPointInfo = (sell) => {
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
     document.querySelector('#address').setAttribute('data-dep', sell.depart_num)
     const groupElement = document.querySelectorAll('.list-item')
-    for(let i = 0; i < groupElement.length; i++) {
+    for (let i = 0; i < groupElement.length; i++) {
         if(groupElement[i].value == sell.group_id) {
             groupElement[i].selected = true
         }

@@ -201,7 +201,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        if(params.has('action') && params.get('action') === "get") {
+        if (params.has('action') && params.get('action') === "get") {
             editSellPointFonction(params.get('id'))
         } else if (params.has('action') && params.get('action') === "new") {
             formSPFuntion()

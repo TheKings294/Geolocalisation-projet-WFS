@@ -12,7 +12,7 @@ export const editUserFunction = async (id) => {
         'GET',
         id,
         null)
-    if(res.hasOwnProperty('error')) {
+    if (res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
@@ -28,7 +28,7 @@ const showUserInfo = (user) => {
     emilElement.setAttribute('value', user.email)
     checkBoxElement.checked = user.is_active
     const id = parseInt(getCookie('user_id'))
-    if(user.id === id) {
+    if (user.id === id) {
         checkBoxElement.disabled = true
     }
 }

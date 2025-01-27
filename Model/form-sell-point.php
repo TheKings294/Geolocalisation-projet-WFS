@@ -15,7 +15,7 @@ function setNewSellPoint(
     string $y,
     int | null $group = null)
 {
-    if($group === 0) {
+    if ($group === 0) {
         $group = null;
     }
     try {
@@ -79,7 +79,7 @@ function updateSellPoint(
     int | null $group = null): bool | string
 {
     $url = 'UPDATE sell_point SET name = :name, siret = :siret, address = :address,';
-    if($img !== null) {
+    if ($img !== null) {
         $url .= 'img = :img,';
     }
     $url .= 'manager = :manager, 
@@ -94,7 +94,7 @@ function updateSellPoint(
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':siret', $siret);
         $stmt->bindValue(':address', $address);
-        if($img !== null) {
+        if ($img !== null) {
             $stmt->bindValue(':img', $img);
         }
         $stmt->bindValue(':manager', $manager);

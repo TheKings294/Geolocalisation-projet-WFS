@@ -4,10 +4,10 @@
 */
 require './Model/map.php';
 
-if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
+if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
     $_SERVER['HTTP_X_REQUESTED_WIDTH'] === 'XMLHttpRequest'
 ) {
-    if(isset($_GET['action'])) {
+    if (isset($_GET['action'])) {
         switch($_GET['action']) {
             case 'get_departments':
                 $res = get_departments($pdo);

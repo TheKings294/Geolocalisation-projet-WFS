@@ -1,5 +1,4 @@
 import {activeSpinner, disabledSpinner} from "./spinner.js";
-import {deletUser} from "../../services/users.js";
 import {getInpage} from "./Inpage.js";
 import {getRowUsers} from "../users.js";
 import {getRowsSellPoint} from "../sell-point.js";

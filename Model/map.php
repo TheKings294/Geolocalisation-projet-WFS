@@ -6,6 +6,6 @@ function get_departments(PDO $pdo): array | string
         $statement->execute();
         return $statement->fetchAll();
     } catch (Exception $e) {
-        echo $e->getMessage();
+        return $e->getMessage();
     }
 }

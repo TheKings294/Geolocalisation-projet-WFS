@@ -3,7 +3,6 @@ import {toast} from "./shared/toats.js";
 import {deletMarker, hasMarker, setMap, setMarker, setView} from "./shared/map.js";
 import {updateProgressBar} from "./shared/progress-bar.js";
 import {FORM_PROGRESS_BAR_UPDATE, WEEK_DAY} from "./shared/constant.js";
-import {addressAutoCompletion, getDepartement} from "../services/form-sell-point.js";
 import {closeModal, modal} from "./shared/modal.js";
 
 const url = new URL(window.location.href);
@@ -46,7 +45,14 @@ export const editSellPointFonction = async (id) => {
 }
 const getGroup = async () => {
     const dataList = document.querySelector('#groupList')
-    const groupData = await request('groups', 'getall', null, null, null, null, 'GET', null)
+    const groupData = await request('groups',
+        'getall',
+        null,
+        null,
+        null,
+        null,
+        'GET',
+        null)
     if(groupData.hasOwnProperty('error')) {
         toast(groupData.error, 'text-bg-danger')
         return false
@@ -162,7 +168,6 @@ const sendForm = (action) => {
         data.append('coor-x', x)
         data.append('coor-y', y)
         data.append('department', dep)
-        console.log(dep)
 
         if(params.get('action') === "get" && params.has('id')) {
             id = params.get('id')
@@ -234,17 +239,33 @@ const autocompletion = () => {
                     if (checkMarker === true) {
                         deletMarker(marker)
                     }
+
                     const selection = event.detail.selection.value;
                     autoCompleteJS.input.value = selection.label;
-                    const res = await addressAutoCompletion(document.querySelector('#address').value.replace(" ", "+"))
-                    const resDep = await getDepartement(res.features[0].properties.postcode)
-                     marker = setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
+
+                    const res = await request('form-sell-point',
+                        'address-communes-api',
+                        null,
+                        null,
+                        null,
+                        null,
+                        'GET',
+                        null,
+                        null,
+                        document.querySelector('#address').value.replace(" ", "+"))
+                    if (res.hasOwnProperty('error')) {
+                        toast(res.error, 'text-bg-danger')
+                        return false
+                    }
+
+                         marker = setMarker(null,res.result.y, res.result.x,
                         '#27742d')
-                    setView(res.features[0].geometry.coordinates[0], res.features[0].geometry.coordinates[1], 20)
+                    setView(res.result.x, res.result.y, 20)
+
                     const inputElement = document.querySelector('#address')
-                    inputElement.setAttribute('data-x', res.features[0].geometry.coordinates[0])
-                    inputElement.setAttribute('data-y', res.features[0].geometry.coordinates[1])
-                    inputElement.setAttribute('data-dep', resDep[0].departement.code)
+                    inputElement.setAttribute('data-x', res.result.x)
+                    inputElement.setAttribute('data-y', res.result.y)
+                    inputElement.setAttribute('data-dep', res.result.dep)
                 }
             }
         }
@@ -307,7 +328,15 @@ const handelSireneButtonByLength = () => {
             document.querySelector('#sirene-api-btn').disabled = false
             document.querySelector('#sirene-api-btn')?.addEventListener('click', async () => {
                 document.querySelector('#sirene-api-btn').innerHTML = 'Loading ...'
-                const res = await request('form-sell-point', 'insee-api', null, null, null, null, 'GET', null, document.querySelector('#siret-number').value)
+                const res = await request('form-sell-point',
+                    'insee-api',
+                    null,
+                    null,
+                    null,
+                    null,
+                    'GET',
+                    null,
+                    document.querySelector('#siret-number').value)
                 if (res.hasOwnProperty('result')) {
                     const data = JSON.parse(res.result)
                     const addressElement = document.querySelector('#address')

@@ -156,6 +156,27 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 ]);
                 http_response_result($jsonResponse);
                 break;
+            case 'address-communes-api':
+                $address = !empty($_GET['text']) ? cleanCodeString($_GET['text']) : null;
+                if ($address === null) {
+                    http_reponse_error('Address is required');
+                    exit();
+                }
+                $addressResponse = address_api($address);
+                if(is_string($addressResponse)) {
+                    http_reponse_error($addressResponse);
+                    exit();
+                }
+                $departmentCode = commune_api($addressResponse['features'][0]['properties']['postcode']);
+                if(is_string($departmentCode)) {
+                    http_reponse_error($departmentCode);
+                    exit();
+                }
+                http_response_result(['address' => $addressResponse['features'][0]['properties']['label'],
+                    'x' => $addressResponse['features'][0]['geometry']['coordinates'][0],
+                    'y' => $addressResponse['features'][0]['geometry']['coordinates'][1],
+                    'dep' => $departmentCode[0]['departement']['code']]);
+                break;
         }
         exit();
     }

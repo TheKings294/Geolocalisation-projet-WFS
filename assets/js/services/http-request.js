@@ -1,4 +1,15 @@
-export const request = async (component, action, who = null, sens = null, page = 1, form = null, methode, id = null, siret = null) => {
+export const request = async (
+        component,
+        action,
+        who = null,
+        sens = null,
+        page = 1,
+        form = null,
+        methode,
+        id = null,
+        siret = null,
+        text = null
+    ) => {
     let url = `index.php?component=${component}&action=${action}`
     let data = null
     if(action !== null && sens !== null) {
@@ -12,6 +23,9 @@ export const request = async (component, action, who = null, sens = null, page =
     }
     if(siret !== null) {
         url += `&siret=${siret}`
+    }
+    if(text !== null) {
+        url += `&text=${text}`
     }
     const res = await fetch(url, {
         method: methode,

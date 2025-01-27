@@ -62,7 +62,12 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Search by siret number</label>
-                        <button class="btn btn-success form-control text-warning" id="sirene-api-btn" type="button" title="Hover message" disabled>SIRET API</button>
+                        <button
+                                class="btn btn-success form-control text-warning"
+                                id="sirene-api-btn" type="button" title="Hover message"
+                                disabled>
+                            SIRET API
+                        </button>
                     </div>
                 </div>
 

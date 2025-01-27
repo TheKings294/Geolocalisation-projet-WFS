@@ -172,7 +172,8 @@ foreach ($jsonDep->features as $key) {
 }
 
 $stmte = $pdo->prepare('SELECT id , name FROM `department` WHERE `depart_num` = :departement');
-$stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
+$stmt = $pdo->prepare('INSERT INTO `sell_point` 
+    (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
 VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
 
 $sellPointContent = getAddress($client);

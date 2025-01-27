@@ -215,12 +215,6 @@ for ($i = 1; $i < 29; $i++) {
         exit();
     }
 }
-function swapLatLng(array $data): array {
-    return array_map(function ($coords) {
-        return [$coords[1], $coords[0]];
-    }, $data);
-}
-
 function treatAsMultiPolygon(array $multipolygon) : array {
     $data = [];
     foreach($multipolygon as $key => $polygon) {

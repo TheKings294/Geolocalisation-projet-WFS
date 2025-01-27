@@ -1,7 +1,7 @@
 <div>
     <h1 class="text-center">Login</h1>
 </div>
-<div class="ms-8 me-8">
+<div class="d-flex justify-content-center align-items-center mt-5">
     <form method="post" id="form-login">
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>

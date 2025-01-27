@@ -3,7 +3,6 @@ import {toast} from "./shared/toats.js";
 import {deletMarker, hasMarker, setMap, setMarker, setView} from "./shared/map.js";
 import {updateProgressBar} from "./shared/progress-bar.js";
 import {FORM_PROGRESS_BAR_UPDATE, WEEK_DAY} from "./shared/constant.js";
-import {addressAutoCompletion, getDepartement} from "../services/form-sell-point.js";
 import {closeModal, modal} from "./shared/modal.js";
 
 const url = new URL(window.location.href);
@@ -27,7 +26,7 @@ export const editSellPointFonction = async (id) => {
     handelBtn()
     const res = await request('form-sell-point', 'get', null, null, null, null, 'GET', id)
     const newGroupBtn = document.querySelector('#modal-open')
-    if(res.hasOwnProperty('error')) {
+    if (res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
@@ -46,8 +45,15 @@ export const editSellPointFonction = async (id) => {
 }
 const getGroup = async () => {
     const dataList = document.querySelector('#groupList')
-    const groupData = await request('groups', 'getall', null, null, null, null, 'GET', null)
-    if(groupData.hasOwnProperty('error')) {
+    const groupData = await request('groups',
+        'getall',
+        null,
+        null,
+        null,
+        null,
+        'GET',
+        null)
+    if (groupData.hasOwnProperty('error')) {
         toast(groupData.error, 'text-bg-danger')
         return false
     }
@@ -88,9 +94,9 @@ const navBtnFuntion = (value) => {
     const tabs = document.querySelectorAll('.tab-pane')
 
     for (let i = 0; i < tabs.length; i++) {
-        if(tabs[i].classList.contains('active')) {
+        if (tabs[i].classList.contains('active')) {
             const formElement = tabs[i].querySelector(`#form${i+1}`)
-            if(value === true) {
+            if (value === true) {
                 if(formElement.checkValidity() === false) {
                     formElement.reportValidity()
                     return false
@@ -104,7 +110,7 @@ const navBtnFuntion = (value) => {
                 updateProgressBar(FORM_PROGRESS_BAR_UPDATE * (i+1))
                 return false
             } else {
-                if(formElement.checkValidity() === false) {
+                if (formElement.checkValidity() === false) {
                     formElement.reportValidity()
                     document.querySelector('#alert-message').innerHTML = '<div class="alert alert-warning" role="alert">\n' +
                         '  Vous devez remplir le formulaire' +
@@ -115,7 +121,7 @@ const navBtnFuntion = (value) => {
                     });
                     return false
                 }
-                if(i - 1 === 0) {
+                if (i - 1 === 0) {
                     disabledBtn('prev', true)
                 } else if (i !== 1) {
                     disabledBtn('next', false)
@@ -162,16 +168,15 @@ const sendForm = (action) => {
         data.append('coor-x', x)
         data.append('coor-y', y)
         data.append('department', dep)
-        console.log(dep)
 
-        if(params.get('action') === "get" && params.has('id')) {
+        if (params.get('action') === "get" && params.has('id')) {
             id = params.get('id')
         } else {
             id = null
         }
         let j = 0
         for (let i = 0; i < WEEK_DAY.length; i++) {
-            if(timeInputs[j].value === "" && timeInputs[j+1].value === "") {
+            if (timeInputs[j].value === "" && timeInputs[j+1].value === "") {
                 tab.push({
                     [WEEK_DAY[i]]: {
                         ouverture: 'fermer',
@@ -192,7 +197,7 @@ const sendForm = (action) => {
         data.append('image', document.querySelector('#img').files[0])
         const res = await request('form-sell-point', action, null, null, null, data, 'POST', id)
 
-        if(res.hasOwnProperty('success')) {
+        if (res.hasOwnProperty('success')) {
             toast('Action reussi', 'text-bg-success')
             updateProgressBar('100')
             navBtnFuntion(false)
@@ -234,17 +239,33 @@ const autocompletion = () => {
                     if (checkMarker === true) {
                         deletMarker(marker)
                     }
+
                     const selection = event.detail.selection.value;
                     autoCompleteJS.input.value = selection.label;
-                    const res = await addressAutoCompletion(document.querySelector('#address').value.replace(" ", "+"))
-                    const resDep = await getDepartement(res.features[0].properties.postcode)
-                     marker = setMarker(null,res.features[0].geometry.coordinates[1], res.features[0].geometry.coordinates[0],
+
+                    const res = await request('form-sell-point',
+                        'address-communes-api',
+                        null,
+                        null,
+                        null,
+                        null,
+                        'GET',
+                        null,
+                        null,
+                        document.querySelector('#address').value.replace(" ", "+"))
+                    if (res.hasOwnProperty('error')) {
+                        toast(res.error, 'text-bg-danger')
+                        return false
+                    }
+
+                         marker = setMarker(null,res.result.y, res.result.x,
                         '#27742d')
-                    setView(res.features[0].geometry.coordinates[0], res.features[0].geometry.coordinates[1], 20)
+                    setView(res.result.x, res.result.y, 20)
+
                     const inputElement = document.querySelector('#address')
-                    inputElement.setAttribute('data-x', res.features[0].geometry.coordinates[0])
-                    inputElement.setAttribute('data-y', res.features[0].geometry.coordinates[1])
-                    inputElement.setAttribute('data-dep', resDep[0].departement.code)
+                    inputElement.setAttribute('data-x', res.result.x)
+                    inputElement.setAttribute('data-y', res.result.y)
+                    inputElement.setAttribute('data-dep', res.result.dep)
                 }
             }
         }
@@ -253,7 +274,7 @@ const autocompletion = () => {
 const handelModalBtnGroup = () => {
     document.querySelector('#modal-btn')?.addEventListener('click', async () => {
         const formModal = document.querySelector('#form-modal')
-        if(formModal.checkValidity() === false) {
+        if (formModal.checkValidity() === false) {
             toast('veuillez remplir le formulaire', 'text-bg-danger')
             return false
         }
@@ -261,7 +282,7 @@ const handelModalBtnGroup = () => {
         formData.append('name', formModal.querySelector('#group-name').value)
         formData.append('color', formModal.querySelector('#color-group').value)
         const res = await request('groups', 'new', null, null, null, formData, 'POST', null)
-        if(res.hasOwnProperty('success')) {
+        if (res.hasOwnProperty('success')) {
             toast('Group created', 'text-bg-success')
             closeModal()
             await getGroup()
@@ -294,7 +315,7 @@ const showSellPointInfo = (sell) => {
     document.querySelector('#address').setAttribute('data-y', sell.coordonate_y)
     document.querySelector('#address').setAttribute('data-dep', sell.depart_num)
     const groupElement = document.querySelectorAll('.list-item')
-    for(let i = 0; i < groupElement.length; i++) {
+    for (let i = 0; i < groupElement.length; i++) {
         if(groupElement[i].value == sell.group_id) {
             groupElement[i].selected = true
         }
@@ -307,7 +328,15 @@ const handelSireneButtonByLength = () => {
             document.querySelector('#sirene-api-btn').disabled = false
             document.querySelector('#sirene-api-btn')?.addEventListener('click', async () => {
                 document.querySelector('#sirene-api-btn').innerHTML = 'Loading ...'
-                const res = await request('form-sell-point', 'insee-api', null, null, null, null, 'GET', null, document.querySelector('#siret-number').value)
+                const res = await request('form-sell-point',
+                    'insee-api',
+                    null,
+                    null,
+                    null,
+                    null,
+                    'GET',
+                    null,
+                    document.querySelector('#siret-number').value)
                 if (res.hasOwnProperty('result')) {
                     const data = JSON.parse(res.result)
                     const addressElement = document.querySelector('#address')

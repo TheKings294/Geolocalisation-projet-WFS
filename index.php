@@ -5,7 +5,8 @@
     require 'Includes/constant.php';
     require 'Includes/http-response.php';
     require 'helpers/helper-sirenne-api.php';
-    require 'helpers/herlper-etat-api.php';
+    require 'helpers/helper-address-api.php';
+    require 'helpers/helper-commune-api.php';
 
     if(isset($_GET["disconect"])) {
         session_destroy();

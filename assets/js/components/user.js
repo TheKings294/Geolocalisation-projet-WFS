@@ -1,10 +1,18 @@
-import {getUerInfo, setUser, setUserInfo} from "../services/user.js";
 import {toast} from "./shared/toats.js";
 import {getCookie} from "./shared/cookie.js";
+import {request} from "../services/http-request.js";
 
 export const editUserFunction = async (id) => {
-    const res = await getUerInfo(id)
-    if(res.hasOwnProperty('error')) {
+    const res = await request('form-user',
+        'get',
+        null,
+        null,
+        null,
+        null,
+        'GET',
+        id,
+        null)
+    if (res.hasOwnProperty('error')) {
         toast(res.error, 'text-bg-danger')
         return false
     }
@@ -20,7 +28,7 @@ const showUserInfo = (user) => {
     emilElement.setAttribute('value', user.email)
     checkBoxElement.checked = user.is_active
     const id = parseInt(getCookie('user_id'))
-    if(user.id === id) {
+    if (user.id === id) {
         checkBoxElement.disabled = true
     }
 }
@@ -32,7 +40,16 @@ const handelBtn = (action, id = null) => {
             validBtn.setAttribute('data-id', id)
             validBtn.addEventListener('click', async () => {
                 const form = document.querySelector('#form-user')
-                const res = await setUserInfo(id, form)
+                const formData = new  FormData(form)
+                const res = await request('form-user',
+                    'edit',
+                    null,
+                    null,
+                    null,
+                    formData,
+                    'POST',
+                    id,
+                    null)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {
@@ -44,7 +61,16 @@ const handelBtn = (action, id = null) => {
             validBtn.setAttribute('name', 'new')
             validBtn.addEventListener('click', async () => {
                 const form = document.querySelector('#form-user')
-                const res = await setUser(form)
+                const formData = new FormData(form)
+                const res = await request('form-user',
+                    'new',
+                    null,
+                    null,
+                    null,
+                    formData,
+                    'POST',
+                    null,
+                    null)
                 if(res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {

@@ -4,27 +4,27 @@
 */
 require './Model/login.php';
 
-    if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         $_SERVER['HTTP_X_REQUESTED_WIDTH'] === 'XMLHttpRequest'
     ) {
         $email = isset($_POST['email']) ? cleanCodeString($_POST['email']) : '';
         $password = isset($_POST['password']) ? cleanCodeString($_POST['password']) : '';
 
-        if(empty($email) || empty($password)) {
+        if (empty($email) || empty($password)) {
             http_reponse_error('email or password is required');
             exit();
         }
 
         $user = getUser($pdo, $email);
 
-        if(!is_array($user)) {
+        if (!is_array($user)) {
             http_reponse_error('this user not exist');
             exit();
         }
 
         $isMatchPassword = password_verify($password, $user['password']);
 
-        if($isMatchPassword && $user['is_active']) {
+        if ($isMatchPassword && $user['is_active']) {
             $_SESSION['auth'] = true;
             $_SESSION['username'] = $user['email'];
             $_SESSION['userId'] = $user['id'];

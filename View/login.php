@@ -1,7 +1,7 @@
 <div>
     <h1 class="text-center">Login</h1>
 </div>
-<div class="ms-8 me-8">
+<div class="d-flex justify-content-center align-items-center mt-5">
     <form method="post" id="form-login">
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
@@ -14,27 +14,11 @@
         <button type="button" class="btn btn-success" id="login-btn">Submit</button>
     </form>
 </div>
-<script src="./assets/js/services/login.js" type="module"></script>
-<script src="./assets/js/components/shared/toats.js" type="module"></script>
+<script src="./assets/js/components/login.js" type="module"></script>
 <script type="module">
-    import {login} from "./assets/js/services/login.js";
-    import {toast} from "./assets/js/components/shared/toats.js";
+    import {handelForm} from "./assets/js/components/login.js";
 
-    const formLogin = document.querySelector('#form-login')
-    const btnLogin = document.querySelector('#login-btn')
-
-    btnLogin.addEventListener('click', async () => {
-        if(formLogin.checkValidity() === false) {
-            formLogin.reportValidity()
-            return false
-        }
-        const loginResult = await login(formLogin)
-
-        if(loginResult.hasOwnProperty('success')) {
-            toast('authentication successful', 'text-bg-success')
-            document.location.href='index.php'
-        } else if (loginResult.hasOwnProperty('error')) {
-            toast(loginResult.error, 'text-bg-danger')
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        handelForm()
     })
 </script>

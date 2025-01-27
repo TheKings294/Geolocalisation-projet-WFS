@@ -62,7 +62,12 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Search by siret number</label>
-                        <button class="btn btn-success form-control text-warning" id="sirene-api-btn" type="button" title="Hover message" disabled>SIRET API</button>
+                        <button
+                                class="btn btn-success form-control text-warning"
+                                id="sirene-api-btn" type="button" title="Hover message"
+                                disabled>
+                            SIRET API
+                        </button>
                     </div>
                 </div>
 
@@ -196,7 +201,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);
         const params = url.searchParams;
-        if(params.has('action') && params.get('action') === "get") {
+        if (params.has('action') && params.get('action') === "get") {
             editSellPointFonction(params.get('id'))
         } else if (params.has('action') && params.get('action') === "new") {
             formSPFuntion()

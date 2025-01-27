@@ -4,19 +4,19 @@
 */
 require './Model/form-sell-point.php';
 
-if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
+if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
     $_SERVER['HTTP_X_REQUESTED_WIDTH'] === 'XMLHttpRequest'
 ) {
-    if(isset($_GET['action'])) {
+    if (isset($_GET['action'])) {
         switch($_GET['action']) {
             case 'get':
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
-                if($id === null) {
+                if ($id === null) {
                     http_reponse_error('id not found !');
                     exit();
                 }
                 $res = getSellPoint($pdo, $id);
-                if(is_string($res)) {
+                if (is_string($res)) {
                     http_reponse_error($res);
                     exit();
                 }
@@ -33,14 +33,14 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $jsonTime = isset($_POST['time']) ? $_POST['time'] : null;
                 $department = isset($_POST['department']) ? cleanCodeString($_POST['department']) : null;
 
-                for($i = 0; $i <= 13; $i++) {
+                for ($i = 0; $i <= 13; $i++) {
                     $times["time". $i] = isset($_POST['time'.$i]) ? cleanCodeString($_POST['time'.$i]) : null;
                 }
 
                 if ($name !== null && $managerName !== null && $siret !== null &&
                     $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
 
-                    if(empty($_FILES['image']['name'])) {
+                    if (empty($_FILES['image']['name'])) {
                         http_reponse_error('Image Required');
                         exit();
                     }
@@ -48,7 +48,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     mooveFile($_FILES['image']['tmp_name'], $finalFileName);
 
                     $depId = getDepartement($pdo, $department);
-                    if(is_string($depId)) {
+                    if (is_string($depId)) {
                         http_reponse_error($depId);
                         exit();
                     }
@@ -56,7 +56,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
 
                     $res = setNewSellPoint($pdo, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
 
-                    if(is_string($res)) {
+                    if (is_string($res)) {
                         http_reponse_error($res);
                         exit();
                     }
@@ -79,11 +79,11 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
 
                 $res = verifImage($pdo, $id);
-                if($res['img'] === null && empty($_FILES['image']['name'])) {
+                if ($res['img'] === null && empty($_FILES['image']['name'])) {
                     http_reponse_error('Image Required');
                     exit();
                 }
-                if($res['img'] !== null && !empty($_FILES['image']['name'])) {
+                if ($res['img'] !== null && !empty($_FILES['image']['name'])) {
                     $delet = deletImage($pdo, $id);
                     if(is_string($delet)) {
                         http_reponse_error($res);
@@ -98,7 +98,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 if ($name !== null && $managerName !== null && $siret !== null &&
                     $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
 
-                    if(!empty($_FILES['image']['name'])) {
+                    if (!empty($_FILES['image']['name'])) {
                         $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                         $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
                         if ($res === false) {
@@ -107,18 +107,18 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                         }
                     }
 
-                    if(!isset($finalFileName)) {
+                    if (!isset($finalFileName)) {
                         $finalFileName = null;
                     }
                     $depId = getDepartement($pdo, $department);
-                    if(is_string($depId)) {
+                    if (is_string($depId)) {
                         http_reponse_error($depId);
                         exit();
                     }
                     $department = $depId['id'];
 
                     $res = updateSellPoint($pdo, $id, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
-                    if(is_string($res)) {
+                    if (is_string($res)) {
                         http_reponse_error($res);
                         exit();
                     }
@@ -127,17 +127,17 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 break;
             case 'insee-api':
                 $siretNumber = isset($_GET['siret']) ? cleanCodeString($_GET['siret']) : null;
-                if(empty($siretNumber)) {
+                if (empty($siretNumber)) {
                     http_reponse_error('Siret Number Required');
                     exit();
                 }
                 $res = sirenne_api(URL_SIRET, $_ENV['SIRENE_API_KEY'], $siretNumber);
-                if(is_string($res)) {
+                if (is_string($res)) {
                     http_reponse_error('SIRET Number Error');
                     exit();
                 }
                 $codePostal = commune_api($res['etablissement']['adresseEtablissement']['codePostalEtablissement']);
-                if(is_string($codePostal)) {
+                if (is_string($codePostal)) {
                     http_reponse_error('Postal Code Error');
                     exit();
                 }
@@ -155,6 +155,27 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     'coorY' => $latPoint[1],
                 ]);
                 http_response_result($jsonResponse);
+                break;
+            case 'address-communes-api':
+                $address = !empty($_GET['text']) ? cleanCodeString($_GET['text']) : null;
+                if ($address === null) {
+                    http_reponse_error('Address is required');
+                    exit();
+                }
+                $addressResponse = address_api($address);
+                if (is_string($addressResponse)) {
+                    http_reponse_error($addressResponse);
+                    exit();
+                }
+                $departmentCode = commune_api($addressResponse['features'][0]['properties']['postcode']);
+                if (is_string($departmentCode)) {
+                    http_reponse_error($departmentCode);
+                    exit();
+                }
+                http_response_result(['address' => $addressResponse['features'][0]['properties']['label'],
+                    'x' => $addressResponse['features'][0]['geometry']['coordinates'][0],
+                    'y' => $addressResponse['features'][0]['geometry']['coordinates'][1],
+                    'dep' => $departmentCode[0]['departement']['code']]);
                 break;
         }
         exit();

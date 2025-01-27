@@ -109,7 +109,7 @@ for ($i = 0; $i < 10; $i++) {
 
 $stmt = $pdo->prepare('INSERT INTO `users` (email, password, is_active) VALUES (:email, :password, :is_active)');
 
-for($i = 0; $i < 50; $i++) {
+for ($i = 0; $i < 50; $i++) {
     try {
         $stmt->bindValue(':email', $faker->email());
         $stmt->bindValue(':password', '$2y$10$UED/HmcickyPq6wU9zsky.my9ICaywAaT0RHcsgBvii9lNZPQWXNK');
@@ -172,7 +172,8 @@ foreach ($jsonDep->features as $key) {
 }
 
 $stmte = $pdo->prepare('SELECT id , name FROM `department` WHERE `depart_num` = :departement');
-$stmt = $pdo->prepare('INSERT INTO `sell_point` (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
+$stmt = $pdo->prepare('INSERT INTO `sell_point` 
+    (name, siret, address, img, manager, hourly, department_id, coordonate_x, coordonate_y, group_id) 
 VALUES (:name, :siret, :address, :img, :manager, :hourly, :department,:x, :y, :group_id)');
 
 $sellPointContent = getAddress($client);

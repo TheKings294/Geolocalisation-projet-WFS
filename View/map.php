@@ -20,7 +20,7 @@
             const message = popupBigMap(sellPoint.result[i])
 
             let color = '#27742d'
-            if(sellPoint.result[i].group_id !== null) {
+            if (sellPoint.result[i].group_id !== null) {
                 color = sellPoint.result[i].color
             }
 

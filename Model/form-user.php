@@ -52,7 +52,7 @@ function updatePassword($pdo, $id, $password): bool | string
 function verifEmail(PDO $pdo, string $email, int $id = null): array | string
 {
     $query = "SELECT COUNT(*) AS usernb FROM users WHERE email = :email";
-    if($id != null) {
+    if ($id != null) {
         $query .= " AND id <> :id";
     }
     try {

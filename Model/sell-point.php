@@ -1,26 +1,26 @@
 <?php
 function getSellPoint($pdo, $page, $perPage, $who, $sens, $all)
 {
-    if($page !== 1) {
+    if ($page !== 1) {
         $curentid = $page * $perPage - $perPage;
     }
     $query = "SELECT sell_point.*, d.name AS dep_name, g.color, g.name AS group_name FROM sell_point 
-    LEFT JOIN geoloc_projet.`groups` g on g.id = sell_point.group_id 
-    LEFT JOIN geoloc_projet.department d on sell_point.department_id = d.id";
+    LEFT JOIN `groups` g on g.id = sell_point.group_id 
+    LEFT JOIN department d on sell_point.department_id = d.id";
 
-    if($who !== null && $sens !== null) {
+    if ($who !== null && $sens !== null) {
         $query .= " ORDER BY $who $sens";
     }
-    if($all === null) {
+    if ($all === null) {
         $query .= " LIMIT $perPage";
     }
 
-    if($all === null) {
+    if ($all === null) {
         $query .= " OFFSET :idstart";
     }
     try {
         $stmt = $pdo->prepare($query);
-        if($all === null) {
+        if ($all === null) {
             $stmt->bindParam(":idstart", $curentid, PDO::PARAM_INT);
         }
         $stmt->execute();
@@ -50,8 +50,4 @@ function deleteSellPoint($pdo, $id): bool | string
     } catch (Exception $e) {
         return $e->getMessage();
     }
-}
-function selectImage($pdo, $id)
-{
-
 }

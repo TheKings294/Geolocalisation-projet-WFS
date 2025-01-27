@@ -6,9 +6,30 @@
     <table class="table" id="list">
         <thead>
         <tr>
-            <th scope="col"><button type="button" data-component="users" data-action="id" data-sens="ASC" class="head btn btn-success">#</button></th>
-            <th scope="col" ><button type="button" data-component="users" data-action="email" data-sens="ASC" class="head btn btn-success">email</button></th>
-            <th scope="col"><button type="button" data-component="users" data-action="is_active" data-sens="ASC" class="head btn btn-success">is_active</button></th>
+            <th scope="col"><button type="button"
+                                    data-component="users"
+                                    data-action="id"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                #
+                            </button>
+            </th>
+            <th scope="col" ><button type="button"
+                                     data-component="users"
+                                     data-action="email"
+                                     data-sens="ASC"
+                                     class="head btn btn-success">
+                                email
+                            </button>
+            </th>
+            <th scope="col"><button type="button"
+                                    data-component="users"
+                                    data-action="is_active"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                is_active
+                            </button>
+            </th>
             <th scope="col">action</th>
         </tr>
         </thead>

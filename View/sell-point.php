@@ -6,11 +6,46 @@
     <table class="table" id="list">
         <thead>
         <tr>
-            <th scope="col"><button type="button" data-component="sell-point" data-action="id" data-sens="ASC" class="head btn btn-success">#</button></th>
-            <th scope="col" ><button type="button" data-component="sell-point" data-action="name" data-sens="ASC" class="head btn btn-success">name</button></th>
-            <th scope="col"><button type="button" data-component="sell-point" data-action="manager" data-sens="ASC" class="head btn btn-success">manager</button></th>
-            <th scope="col"><button type="button" data-component="sell-point" data-action="d.name" data-sens="ASC" class="head btn btn-success">department</button></th>
-            <th scope="col"><button type="button" data-component="sell-point" data-action="g.name" data-sens="ASC" class="head btn btn-success">group</button></th>
+            <th scope="col"><button type="button"
+                                    data-component="sell-point"
+                                    data-action="id"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                #
+                            </button>
+            </th>
+            <th scope="col" ><button type="button"
+                                     data-component="sell-point"
+                                     data-action="name"
+                                     data-sens="ASC"
+                                     class="head btn btn-success">
+                                name
+                            </button>
+            </th>
+            <th scope="col"><button type="button"
+                                    data-component="sell-point"
+                                    data-action="manager"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                manager
+                            </button>
+            </th>
+            <th scope="col"><button type="button"
+                                    data-component="sell-point"
+                                    data-action="d.name"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                department
+                            </button>
+            </th>
+            <th scope="col"><button type="button"
+                                    data-component="sell-point"
+                                    data-action="g.name"
+                                    data-sens="ASC"
+                                    class="head btn btn-success">
+                                group
+                            </button>
+            </th>
             <th scope="col">action</th>
         </tr>
         </thead>

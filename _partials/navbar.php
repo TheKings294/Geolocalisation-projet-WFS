@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-success">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="./assets/svg/favicon.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">McDo Store Map</a>
+        <a class="navbar-brand" href="index.php"><img src="./assets/svg/favicon.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">McDo Store Map</a>
         <button
             class="navbar-toggler"
             type="button"

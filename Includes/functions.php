@@ -16,16 +16,16 @@ function deletFile(string $file): bool
             unlink($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file);
             return true;
         } catch (Exception $e) {
-            return false;
+            return $e->getMessage();
         }
     }
     return false;
 }
-function mooveFile(string $tmpFile, string $file): bool
+function mooveFile(string $tmpFile, string $file): bool | string
 {
     try {
-        move_uploaded_file($tmpFile, $_SERVER['DOCUMENT_ROOT']. UPLOAD_DIRECTORY . $file);
-        return true;
+        $res  = move_uploaded_file($tmpFile, $_SERVER['DOCUMENT_ROOT']. UPLOAD_DIRECTORY . $file);
+        return $res;
     } catch (Exception $e) {
         return $e->getMessage();
     }

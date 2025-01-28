@@ -207,6 +207,9 @@ const sendForm = (action) => {
                 document.querySelector('#form2').reset()
                 document.querySelector('#form3').reset()
             }
+            if (res.hasOwnProperty('warning')) {
+                toast(res.warning, 'text-bg-warning')
+            }
         } else if (res.hasOwnProperty('error')) {
             toast(res.error, 'text-bg-danger')
         }

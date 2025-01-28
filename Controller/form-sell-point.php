@@ -46,10 +46,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                     $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
 
-                    if (is_string($res)) {
-                        http_reponse_error('Impossible to move sell point image !');
-                        $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res);
-                        exit();
+                    if (is_string($res) || $res === false) {
+                        $error = $res;
+                        if(empty($res)) {
+                            $error = 'Image does not exists';
+                        }
+                        $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $error);
+                        $finalFileName = null;
                     }
 
                     $depId = getDepartement($pdo, $department);
@@ -65,6 +68,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     if (is_string($res)) {
                         http_reponse_error('Le point de vente na pas pu être crée');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                        exit();
+                    }
+                    if (!empty($error)) {
+                        http_reponse_success_warning($error);
                         exit();
                     }
                    http_reponse_success();
@@ -98,7 +105,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                         exit();
                     }
                     $res = deletFile($res['img']);
-                    if($res === false) {
+                    if(is_string($res)) {
                         http_reponse_error('Image could not be deleted');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                         exit();
@@ -110,10 +117,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     if (!empty($_FILES['image']['name'])) {
                         $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                         $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
-                        if (is_string($res)) {
-                            http_reponse_error('Image can not be uploaded');
-                            $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res);
-                            exit();
+                        if (is_string($res) || $res === false) {
+                            $error = $res;
+                            if(empty($res)) {
+                                $error = 'Image does not exists';
+                            }
+                            $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $error);
+                            $finalFileName = null;
                         }
                     }
 
@@ -132,6 +142,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     if (is_string($res)) {
                         http_reponse_error('Le point de vente n a pas pu être éditer');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                        exit();
+                    }
+                    if (!empty($error)) {
+                        http_reponse_success_warning($error);
                         exit();
                     }
                     http_reponse_success();

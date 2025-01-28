@@ -17,7 +17,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getUser($pdo, $_GET['id']);
             if (!is_array($res)) {
                 http_reponse_error('le user n a pas pu être récupéré');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -48,7 +50,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = setUser($pdo, $email, $password, $is_active);
             if (!is_bool($res)) {
                 http_reponse_error('le user n a pas pu être crée');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_reponse_success();
@@ -73,7 +77,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = updateUser($pdo, $id, $email, $is_active);
             if (is_string($res)) {
                 http_reponse_error('le user n a pas pu être edité');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
 
@@ -87,7 +93,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $result = updatePassword($pdo, $password, $id);
                 if (is_string($result)) {
                     http_reponse_error('le mot de passe na pas pu être edité');
-                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $result);
+                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $result, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
             }

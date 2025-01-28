@@ -23,11 +23,11 @@ Géolocalisation-projet-WFS est un projet de cours en développement web full st
     - Copiez le fichier `.env.example` en `.env`.
     - Modifiez les variables dans le fichier `.env` pour qu'elles correspondent à votre configuration locale.
    
-   4. **Lancer le script de fixture**
-       - Exécutez la commande suivante dans le répertoire principal du projet :
-       ```bash
-      php scripts/fixture.php
-         ```
+4. **Lancer le script de fixture**
+    - Exécutez la commande suivante dans le répertoire principal du projet :
+    ```bash
+   php scripts/fixture.php
+      ```
 
 ## Fonctionnalités principales
 - Création, gestion et affichage des points de vente (PDV).

@@ -15,7 +15,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $res = get_departments($pdo);
                 if(is_string($res)) {
                     http_reponse_error('Une erreur est survenue lors de la recherche des départements.');
-                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
                 http_response_result($res);

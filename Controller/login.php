@@ -20,7 +20,9 @@ require './Model/login.php';
         $user = getUser($pdo, $email);
         if (!is_array($user)) {
             http_reponse_error('Une erreur est survenue lors de la connexion');
-            $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $user);
+            $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $user, [
+                'file' => __FILE__,
+            ]);
             exit();
         } elseif (count($user) === 0) {
             http_reponse_error('This user does not exist');
@@ -34,7 +36,9 @@ require './Model/login.php';
             $_SESSION['username'] = $user['email'];
             $_SESSION['userId'] = $user['id'];
             setcookie('user_id', $user['id'], time() + (86400 * 30), "/");
-            $appLogger->info('[' .$_SESSION['username'] . ']' . 'Conexion at the application');
+            $appLogger->info('[' .$_SESSION['username'] . ']' . 'Conexion at the application', [
+                'file' => __FILE__,
+            ]);
             http_reponse_success();
             exit();
         } elseif ($isMatchPassword && !$user['is_active']) {

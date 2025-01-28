@@ -17,7 +17,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getGroups($pdo);
             if (!is_array($res)) {
                 http_reponse_error('les groups n ont pas pu être récupéré');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -33,7 +35,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = setGroups($pdo, $name, $color);
             if (is_string($res)) {
                 http_reponse_error('Le group na pas pu être crée');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_reponse_success();

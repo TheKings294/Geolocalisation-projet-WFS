@@ -18,7 +18,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getSellPoint($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens, null);
             if (!is_array($res)) {
                 http_response_result('Une erreur s\'est produite lors de la récupération.');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -27,7 +29,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getNbPage($pdo);
             if (!is_array($res)) {
                 http_reponse_error('Une erreur s\'est produite lors de la récupération.');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -36,7 +40,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getSellPoint($pdo, null, null, null, null, 1);
             if (!is_array($res)) {
                 http_reponse_error('Une erreur s\'est produite lors de la récupération.');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -50,7 +56,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = deleteSellPoint($pdo, $id);
             if (is_string($res)) {
                 http_reponse_error('Le poitn de vente n\'a pas été suprimé');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_reponse_success();

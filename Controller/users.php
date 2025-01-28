@@ -18,7 +18,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getUsers($pdo, $page, LIST_ITEM_PER_PAGE, $who, $sens);
             if (!is_array($res)) {
                 http_reponse_error('Une erreur s\'est produite lors de l\'éxécution');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -27,7 +29,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = getPageNumbers($pdo);
             if (!is_array($res)) {
                 http_reponse_error('Une erreur s\'est produite lors de l\'éxécution');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_response_result($res);
@@ -43,7 +47,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $res = deleteUser($pdo, $id);
             if (is_string($res)) {
                 http_reponse_error('L\'utilisateur n\'a pas pu être suprimé');
-                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
                 exit();
             }
             http_reponse_success();

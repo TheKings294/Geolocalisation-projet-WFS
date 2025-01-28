@@ -1,6 +1,8 @@
 <?php
 /**
  * @var PDO $pdo
+ * @var object $appLogger
+ * @var object $apiLogger
 */
 require './Model/form-sell-point.php';
 
@@ -12,12 +14,15 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             case 'get':
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
                 if ($id === null) {
-                    http_reponse_error('id not found !');
+                    http_reponse_error('id cannot be null');
                     exit();
                 }
                 $res = getSellPoint($pdo, $id);
                 if (is_string($res)) {
-                    http_reponse_error($res);
+                    http_reponse_error('Impossible to get sell point !');
+                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res,  [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
                 http_response_result($res);
@@ -33,23 +38,33 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $jsonTime = isset($_POST['time']) ? $_POST['time'] : null;
                 $department = isset($_POST['department']) ? cleanCodeString($_POST['department']) : null;
 
-                for ($i = 0; $i <= 13; $i++) {
-                    $times["time". $i] = isset($_POST['time'.$i]) ? cleanCodeString($_POST['time'.$i]) : null;
-                }
-
                 if ($name !== null && $managerName !== null && $siret !== null &&
-                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
+                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null && $department !== null) {
 
                     if (empty($_FILES['image']['name'])) {
                         http_reponse_error('Image Required');
                         exit();
                     }
                     $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                    mooveFile($_FILES['image']['tmp_name'], $finalFileName);
+                    $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
+
+                    if (is_string($res) || $res === false) {
+                        $error = $res;
+                        if(empty($res)) {
+                            $error = 'Image does not exists';
+                        }
+                        $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $error, [
+                            'file' => __FILE__,
+                        ]);
+                        $finalFileName = null;
+                    }
 
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error($depId);
+                        http_reponse_error('Oops...the service is not responding!');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId, [
+                            'file' => __FILE__,
+                        ]);
                         exit();
                     }
                     $department = $depId['id'];
@@ -57,12 +72,19 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $res = setNewSellPoint($pdo, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
 
                     if (is_string($res)) {
-                        http_reponse_error($res);
+                        http_reponse_error('The point of sale could not be created');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                            'file' => __FILE__,
+                        ]);
+                        exit();
+                    }
+                    if (!empty($error)) {
+                        http_reponse_success_warning($error);
                         exit();
                     }
                    http_reponse_success();
                 } else {
-                    http_reponse_error('Formulaire incorrect');
+                    http_reponse_error('Incorrect form');
                     exit();
                 }
                 break;
@@ -87,23 +109,39 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $delet = deletImage($pdo, $id);
                     if(is_string($delet)) {
                         http_reponse_error($res);
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                            'file' => __FILE__,
+                        ]);
                         exit();
                     }
                     $res = deletFile($res['img']);
-                    if($res === false) {
+                    if(is_string($res) || $res === false) {
+                        $error = $res;
+                        if(empty($res)) {
+                            $error = 'Image does not exists';
+                        }
                         http_reponse_error('Image could not be deleted');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $error, [
+                            'file' => __FILE__,
+                        ]);
                         exit();
                     }
                 }
                 if ($name !== null && $managerName !== null && $siret !== null &&
-                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
+                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null && $department !== null) {
 
                     if (!empty($_FILES['image']['name'])) {
                         $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                         $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
-                        if ($res === false) {
-                            http_reponse_error('Image can not be uploaded');
-                            exit();
+                        if (is_string($res) || $res === false) {
+                            $error = $res;
+                            if(empty($res)) {
+                                $error = 'Image does not exists';
+                            }
+                            $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $error, [
+                                'file' => __FILE__,
+                            ]);
+                            $finalFileName = null;
                         }
                     }
 
@@ -112,14 +150,24 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     }
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error($depId);
+                        http_reponse_error('The department could not be recovered');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId, [
+                            'file' => __FILE__,
+                        ]);
                         exit();
                     }
                     $department = $depId['id'];
 
                     $res = updateSellPoint($pdo, $id, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
                     if (is_string($res)) {
-                        http_reponse_error($res);
+                        http_reponse_error('The point of sale could not be edited');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                            'file' => __FILE__,
+                        ]);
+                        exit();
+                    }
+                    if (!empty($error)) {
+                        http_reponse_success_warning($error);
                         exit();
                     }
                     http_reponse_success();
@@ -134,15 +182,25 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $res = sirenne_api(URL_SIRET, $_ENV['SIRENE_API_KEY'], $siretNumber);
                 if (is_string($res)) {
                     http_reponse_error('SIRET Number Error');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
                 $codePostal = commune_api($res['etablissement']['adresseEtablissement']['codePostalEtablissement']);
                 if (is_string($codePostal)) {
                     http_reponse_error('Postal Code Error');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $codePostal, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
-                $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
-                    $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
+                $latPoint = [null, null];
+                if ($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'] !== null &&
+                    $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement'] !== null) {
+                    $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
+                        $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
+                }
                 $jsonResponse = json_encode([
                     'address' => $res['etablissement']['adresseEtablissement']['numeroVoieEtablissement'] . ' ' .
                         $res['etablissement']['adresseEtablissement']['typeVoieEtablissement'] . ' ' .
@@ -164,12 +222,18 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $addressResponse = address_api($address);
                 if (is_string($addressResponse)) {
-                    http_reponse_error($addressResponse);
+                    http_reponse_error('Oops...the service is not responding');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $address, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
                 $departmentCode = commune_api($addressResponse['features'][0]['properties']['postcode']);
                 if (is_string($departmentCode)) {
-                    http_reponse_error($departmentCode);
+                    http_reponse_error('Oops...the service is not responding');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $departmentCode, [
+                        'file' => __FILE__,
+                    ]);
                     exit();
                 }
                 http_response_result(['address' => $addressResponse['features'][0]['properties']['label'],

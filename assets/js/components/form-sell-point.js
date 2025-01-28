@@ -207,6 +207,9 @@ const sendForm = (action) => {
                 document.querySelector('#form2').reset()
                 document.querySelector('#form3').reset()
             }
+            if (res.hasOwnProperty('warning')) {
+                toast(res.warning, 'text-bg-warning')
+            }
         } else if (res.hasOwnProperty('error')) {
             toast(res.error, 'text-bg-danger')
         }
@@ -348,8 +351,11 @@ const handelSireneButtonByLength = () => {
                     if (checkMarker === true) {
                         deletMarker(marker)
                     }
-                    marker = setMarker(null,data.coorY, data.coorX, '#27742d')
-                    setView(data.coorY, data.coorX, 20)
+                    console.log(data.coorY)
+                    if(data.coorX !== null && data.coorY !== null) {
+                        marker = setMarker(null,data.coorX, data.coorY, '#27742d')
+                        setView(data.coorY, data.coorX, 20)
+                    }
                 } else if (res.hasOwnProperty('error')) {
                     toast(res.error, 'text-bg-danger')
                 }

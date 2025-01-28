@@ -13,21 +13,21 @@ function deletFile(string $file): bool
 {
     if (file_exists($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file)) {
         try {
-            unlink($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file);
-            return true;
+            $res = unlink($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file);
+            return $res;
         } catch (Exception $e) {
-            return false;
+            return $e->getMessage();
         }
     }
     return false;
 }
-function mooveFile(string $tmpFile, string $file): bool
+function mooveFile(string $tmpFile, string $file): bool | string
 {
     try {
-        move_uploaded_file($tmpFile, $_SERVER['DOCUMENT_ROOT']. UPLOAD_DIRECTORY . $file);
-        return true;
+        $res  = move_uploaded_file($tmpFile, $_SERVER['DOCUMENT_ROOT']. UPLOAD_DIRECTORY . $file);
+        return $res;
     } catch (Exception $e) {
-        return false;
+        return $e->getMessage();
     }
 }
 function convertOrdoToLat($value1, $value2): array

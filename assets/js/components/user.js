@@ -54,6 +54,7 @@ const handelBtn = (action, id = null) => {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {
                     toast('User Update', 'text-bg-success')
+
                 }
             })
             break
@@ -75,6 +76,7 @@ const handelBtn = (action, id = null) => {
                     toast(res.error, 'text-bg-danger')
                 } else if (res.hasOwnProperty('success')) {
                     toast('User Created', 'text-bg-success')
+                    form.reset()
                 }
             })
             break

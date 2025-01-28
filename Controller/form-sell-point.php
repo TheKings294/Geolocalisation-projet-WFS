@@ -14,7 +14,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             case 'get':
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
                 if ($id === null) {
-                    http_reponse_error('id not found !');
+                    http_reponse_error('id cannot be null');
                     exit();
                 }
                 $res = getSellPoint($pdo, $id);
@@ -61,7 +61,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
 
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error('Oups ... le service ne réponds pas !');
+                        http_reponse_error('Oops...the service is not responding!');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId, [
                             'file' => __FILE__,
                         ]);
@@ -72,7 +72,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $res = setNewSellPoint($pdo, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
 
                     if (is_string($res)) {
-                        http_reponse_error('Le point de vente na pas pu être crée');
+                        http_reponse_error('The point of sale could not be created');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
                             'file' => __FILE__,
                         ]);
@@ -84,7 +84,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     }
                    http_reponse_success();
                 } else {
-                    http_reponse_error('Formulaire incorrect');
+                    http_reponse_error('Incorrect form');
                     exit();
                 }
                 break;
@@ -115,9 +115,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                         exit();
                     }
                     $res = deletFile($res['img']);
-                    if(is_string($res)) {
+                    if(is_string($res) || $res === false) {
+                        $error = $res;
+                        if(empty($res)) {
+                            $error = 'Image does not exists';
+                        }
                         http_reponse_error('Image could not be deleted');
-                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $error, [
                             'file' => __FILE__,
                         ]);
                         exit();
@@ -146,7 +150,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     }
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error('LE département n a pas pu être récupéré');
+                        http_reponse_error('The department could not be recovered');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId, [
                             'file' => __FILE__,
                         ]);
@@ -156,7 +160,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
 
                     $res = updateSellPoint($pdo, $id, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
                     if (is_string($res)) {
-                        http_reponse_error('Le point de vente n a pas pu être éditer');
+                        http_reponse_error('The point of sale could not be edited');
                         $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
                             'file' => __FILE__,
                         ]);
@@ -191,8 +195,12 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     ]);
                     exit();
                 }
-                $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
-                    $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
+                $latPoint = [null, null];
+                if ($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'] !== null &&
+                    $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement'] !== null) {
+                    $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
+                        $res['etablissement']['adresseEtablissement']['coordonneeLambertOrdonneeEtablissement']);
+                }
                 $jsonResponse = json_encode([
                     'address' => $res['etablissement']['adresseEtablissement']['numeroVoieEtablissement'] . ' ' .
                         $res['etablissement']['adresseEtablissement']['typeVoieEtablissement'] . ' ' .
@@ -214,7 +222,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $addressResponse = address_api($address);
                 if (is_string($addressResponse)) {
-                    http_reponse_error('Oups ... le service ne réponds pas');
+                    http_reponse_error('Oops...the service is not responding');
                     $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $address, [
                         'file' => __FILE__,
                     ]);
@@ -222,7 +230,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $departmentCode = commune_api($addressResponse['features'][0]['properties']['postcode']);
                 if (is_string($departmentCode)) {
-                    http_reponse_error('Oups ... le service ne réponds pas');
+                    http_reponse_error('Oops...the service is not responding');
                     $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $departmentCode, [
                         'file' => __FILE__,
                     ]);

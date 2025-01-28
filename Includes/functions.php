@@ -13,8 +13,8 @@ function deletFile(string $file): bool
 {
     if (file_exists($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file)) {
         try {
-            unlink($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file);
-            return true;
+            $res = unlink($_SERVER['DOCUMENT_ROOT'] . UPLOAD_DIRECTORY . $file);
+            return $res;
         } catch (Exception $e) {
             return $e->getMessage();
         }

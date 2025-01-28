@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 17 jan. 2025 à 21:50
+-- Généré le : mar. 28 jan. 2025 à 12:33
 -- Version du serveur : 8.0.35
 -- Version de PHP : 8.3.9
 
@@ -21,6 +21,7 @@ SET time_zone = "+00:00";
 -- Base de données : `geoloc_projet`
 --
 
+-- --------------------------------------------------------
 
 --
 -- Structure de la table `department`
@@ -33,6 +34,8 @@ CREATE TABLE `department` (
   `polygon_json` json NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
 -- Structure de la table `groups`
 --
@@ -43,6 +46,7 @@ CREATE TABLE `groups` (
   `color` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Structure de la table `sell_point`
@@ -62,6 +66,7 @@ CREATE TABLE `sell_point` (
   `group_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Structure de la table `users`
@@ -73,7 +78,6 @@ CREATE TABLE `users` (
   `password` text NOT NULL,
   `is_active` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 --
 -- Index pour les tables déchargées
@@ -113,25 +117,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `department`
 --
 ALTER TABLE `department`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `groups`
 --
 ALTER TABLE `groups`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `sell_point`
 --
 ALTER TABLE `sell_point`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées

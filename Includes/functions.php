@@ -27,7 +27,7 @@ function mooveFile(string $tmpFile, string $file): bool
         move_uploaded_file($tmpFile, $_SERVER['DOCUMENT_ROOT']. UPLOAD_DIRECTORY . $file);
         return true;
     } catch (Exception $e) {
-        return false;
+        return $e->getMessage();
     }
 }
 function convertOrdoToLat($value1, $value2): array

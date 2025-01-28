@@ -8,3 +8,4 @@ uploads/*
 !uploads/mcdo4.jpg
 !uploads/mcdo5.jpg
 .DS_Store
+log/

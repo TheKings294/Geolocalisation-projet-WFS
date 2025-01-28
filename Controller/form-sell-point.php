@@ -1,6 +1,8 @@
 <?php
 /**
  * @var PDO $pdo
+ * @var object $appLogger
+ * @var object $apiLogger
 */
 require './Model/form-sell-point.php';
 
@@ -17,7 +19,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $res = getSellPoint($pdo, $id);
                 if (is_string($res)) {
-                    http_reponse_error($res);
+                    http_reponse_error('Impossible to get sell point !');
+                    $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                     exit();
                 }
                 http_response_result($res);
@@ -33,23 +36,26 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $jsonTime = isset($_POST['time']) ? $_POST['time'] : null;
                 $department = isset($_POST['department']) ? cleanCodeString($_POST['department']) : null;
 
-                for ($i = 0; $i <= 13; $i++) {
-                    $times["time". $i] = isset($_POST['time'.$i]) ? cleanCodeString($_POST['time'.$i]) : null;
-                }
-
                 if ($name !== null && $managerName !== null && $siret !== null &&
-                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
+                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null && $department !== null) {
 
                     if (empty($_FILES['image']['name'])) {
                         http_reponse_error('Image Required');
                         exit();
                     }
                     $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                    mooveFile($_FILES['image']['tmp_name'], $finalFileName);
+                    $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
+
+                    if (is_string($res)) {
+                        http_reponse_error('Impossible to move sell point image !');
+                        $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res);
+                        exit();
+                    }
 
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error($depId);
+                        http_reponse_error('Oups ... le service ne réponds pas !');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId);
                         exit();
                     }
                     $department = $depId['id'];
@@ -57,7 +63,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $res = setNewSellPoint($pdo, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
 
                     if (is_string($res)) {
-                        http_reponse_error($res);
+                        http_reponse_error('Le point de vente na pas pu être crée');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                         exit();
                     }
                    http_reponse_success();
@@ -87,22 +94,25 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     $delet = deletImage($pdo, $id);
                     if(is_string($delet)) {
                         http_reponse_error($res);
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                         exit();
                     }
                     $res = deletFile($res['img']);
                     if($res === false) {
                         http_reponse_error('Image could not be deleted');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                         exit();
                     }
                 }
                 if ($name !== null && $managerName !== null && $siret !== null &&
-                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null) {
+                    $address !== null && $coorX !== null && $coorY !== null && $jsonTime !== null && $department !== null) {
 
                     if (!empty($_FILES['image']['name'])) {
                         $finalFileName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                         $res = mooveFile($_FILES['image']['tmp_name'], $finalFileName);
-                        if ($res === false) {
+                        if (is_string($res)) {
                             http_reponse_error('Image can not be uploaded');
+                            $appLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res);
                             exit();
                         }
                     }
@@ -112,14 +122,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                     }
                     $depId = getDepartement($pdo, $department);
                     if (is_string($depId)) {
-                        http_reponse_error($depId);
+                        http_reponse_error('LE département n a pas pu être récupéré');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $depId);
                         exit();
                     }
                     $department = $depId['id'];
 
                     $res = updateSellPoint($pdo, $id, $name, $siret, $address, $finalFileName, $managerName, $jsonTime, $department, $coorX, $coorY, $group);
                     if (is_string($res)) {
-                        http_reponse_error($res);
+                        http_reponse_error('Le point de vente n a pas pu être éditer');
+                        $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res);
                         exit();
                     }
                     http_reponse_success();
@@ -134,11 +146,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 $res = sirenne_api(URL_SIRET, $_ENV['SIRENE_API_KEY'], $siretNumber);
                 if (is_string($res)) {
                     http_reponse_error('SIRET Number Error');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $res);
                     exit();
                 }
                 $codePostal = commune_api($res['etablissement']['adresseEtablissement']['codePostalEtablissement']);
                 if (is_string($codePostal)) {
                     http_reponse_error('Postal Code Error');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $codePostal);
                     exit();
                 }
                 $latPoint = convertOrdoToLat($res['etablissement']['adresseEtablissement']['coordonneeLambertAbscisseEtablissement'],
@@ -164,12 +178,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 }
                 $addressResponse = address_api($address);
                 if (is_string($addressResponse)) {
-                    http_reponse_error($addressResponse);
+                    http_reponse_error('Oups ... le service ne réponds pas');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $address);
                     exit();
                 }
                 $departmentCode = commune_api($addressResponse['features'][0]['properties']['postcode']);
                 if (is_string($departmentCode)) {
-                    http_reponse_error($departmentCode);
+                    http_reponse_error('Oups ... le service ne réponds pas');
+                    $apiLogger->error('[' .$_SESSION['username'] . ']' . ' ' . $departmentCode);
                     exit();
                 }
                 http_response_result(['address' => $addressResponse['features'][0]['properties']['label'],

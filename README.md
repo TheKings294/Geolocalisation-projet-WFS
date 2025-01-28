@@ -22,27 +22,28 @@ Géolocalisation-projet-WFS est un projet de cours en développement web full st
 3. **Configurer l'environnement** :
     - Copiez le fichier `.env.example` en `.env`.
     - Modifiez les variables dans le fichier `.env` pour qu'elles correspondent à votre configuration locale.
-   
-4. **Lancer le script de fixture**
+    - **Clé API pour l'API de l'Insee** : Ajoutez une clé API valide pour l'API de l'Insee dans le fichier `.env` sous la variable `SIRENE_API_KEY`.
+
+4. **Lancer le script de fixture** :
     - Exécutez la commande suivante dans le répertoire principal du projet :
-    ```bash
-   php scripts/fixture.php
+      ```bash
+      php scripts/fixture.php
       ```
 
 ## Fonctionnalités principales
 - Création, gestion et affichage des points de vente (PDV).
 - Intégration des données géographiques via le format GeoJSON.
+- Récupération de données depuis l'API de l'Insee grâce à une clé API.
 - Interface utilisateur responsive grâce à Bootstrap.
 
 ## Contributeurs
 - **Julien Gidel** : Assistance pour le traitement des données GeoJSON.
 
 ## Mot de passe admin
-Pour vous conecter a l'appli apres sont integration 
+Pour vous connecter à l'application après son intégration :
 
 - **Adresse mail** : admin@admin.com
 - **Mot de passe** : admin
 
 ## Licence
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-

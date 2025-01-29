@@ -13,8 +13,12 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         exit();
     }
     switch ($_GET['action']) {
-        case 'getall':
-            $res = getGroups($pdo);
+        case 'groups':
+            $page = isset($_GET['page']) ? cleanCodeString(intval($_GET['page'])) : 1;
+            $who = isset($_GET['who']) ? cleanCodeString($_GET['who']) : null;
+            $sens = isset($_GET['sens']) ? cleanCodeString($_GET['sens']) : null;
+
+            $res = getGroups($pdo, $page,LIST_ITEM_PER_PAGE, $who, $sens);
             if (!is_array($res)) {
                 http_reponse_error('les groups n ont pas pu être récupéré');
                 $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
@@ -41,6 +45,17 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 exit();
             }
             http_reponse_success();
+            break;
+        case 'page':
+            $res = getGroupNb($pdo);
+            if (!is_array($res)) {
+                http_reponse_error('The action canot be do');
+                $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [
+                    'file' => __FILE__,
+                ]);
+                exit();
+            }
+            http_response_result($res);
             break;
     }
     exit();

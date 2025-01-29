@@ -46,7 +46,7 @@ export const editSellPointFonction = async (id) => {
 const getGroup = async () => {
     const dataList = document.querySelector('#groupList')
     const groupData = await request('groups',
-        'getall',
+        'groups',
         null,
         null,
         null,

@@ -2,6 +2,7 @@
 /**
  * @var array $totalSellPoint
  * @var array $totaluser
+ * @var array $totalGroup
  */
 ?>
 
@@ -13,6 +14,7 @@
     <div class="d-flex justify-content-around">
         <p class="text-warning"><i class="fa-solid fa-shop text-success"></i> <?php echo $totalSellPoint['nb'] . ' Points de vente';?></p>
         <p class="text-warning"><i class="fa-solid fa-user text-success"></i> <?php echo $totaluser['nb'] . ' Utilisateurs'?></p>
+        <p class="text-warning"><i class="fa-solid fa-group-arrows-rotate text-success"></i> <?php echo $totalGroup['nb'] . ' Groupes'?></p>
     </div>
 </div>
 <div id="raccourcis" class="border rounded mt-5">
@@ -20,5 +22,6 @@
     <div class="d-flex justify-content-around mb-3">
         <a href="index.php?component=form-sell-point" class="btn btn-success text-warning">Ajouter un Point de vente <i class="fa-solid fa-plus"></i></a>
         <a href="index.php?component=form-user" class="btn btn-success text-warning">Ajouter un Utilisateur <i class="fa-solid fa-plus"></i></a>
+        <a href="index.php?component=form-group" class="btn btn-success text-warning">Ajouter un Group <i class="fa-solid fa-plus"></i></a>
     </div>
 </div>

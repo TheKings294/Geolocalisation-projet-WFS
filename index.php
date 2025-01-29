@@ -44,6 +44,8 @@
         <link rel="stylesheet" href="./Includes/bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="Includes/fontawsome/css/all.min.css">
         <link rel="stylesheet" href="./Includes/leaflet/leaflet.css">
+        <link rel="stylesheet" href="Includes/markerCluster/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="Includes/markerCluster/MarkerCluster.css">
         <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="icon" href="./favicon.ico">
         <title>Projet Géolocalisation</title>
@@ -83,5 +85,6 @@
         <script src="Includes/bootstrap/bootstrap.bundle.min.js"></script>
         <script src="Includes/leaflet/leaflet.js"></script>
         <script src="Includes/autoComplete.js-10.2.9/autoComplete.js"></script>
+        <script src="Includes/markerCluster/leaflet.markercluster.js"></script>
     </body>
 </html>

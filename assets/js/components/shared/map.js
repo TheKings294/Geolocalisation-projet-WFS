@@ -1,5 +1,6 @@
 let map
 let info = L.control();
+let markers = L.markerClusterGroup()
 info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info');
     this.update();
@@ -15,13 +16,19 @@ export const setMap = (x, y , zoom) => {
 
 export const setMarker = (message = null, x , y, colorValue) => {
     let color = colorValue
+
     let marker = L.marker([x, y], {
         icon: svgMarker(color)
-    }).addTo(map)
-    if(message !== null) {
+    })
+    if (message !== null) {
         marker.bindPopup(message)
     }
-    return marker
+
+    markers.addLayer(marker)
+
+    map.addLayer(markers)
+
+    return markers
 }
 const svgMarker = (color) => {
     return  L.divIcon({
@@ -79,5 +86,5 @@ export const hasMarker = () => {
     return hasMarker;
 }
 export const deletMarker = (marker) => {
-    marker.remove();
+    markers.removeLayer(marker);
 }

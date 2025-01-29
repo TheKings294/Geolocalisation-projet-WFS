@@ -34,6 +34,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
                 http_reponse_error('email or password invalid');
                 exit();
             }
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                http_reponse_error('email invalid');
+                exit();
+            }
             if ($password !== $check_password) {
                 http_reponse_error('password not matched');
                 exit();
@@ -71,6 +75,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
             $check_eamil = verifEmail($pdo, $email, $id);
             if ($check_eamil['usernb'] !== 0) {
                 http_reponse_error('email already exists');
+                exit();
+            }
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                http_reponse_error('email invalid');
                 exit();
             }
 

@@ -44,7 +44,7 @@ function getSellPoint(PDO $pdo, $id): array | string
     try {
         $stmt = $pdo->prepare('
 SELECT sell_point.*, d.depart_num FROM sell_point 
-    LEFT JOIN geoloc_projet.department d on d.id = sell_point.department_id 
+    LEFT JOIN department d on d.id = sell_point.department_id 
                                   WHERE sell_point.id = :id');
         $stmt->bindValue(':id', $id);
         $stmt->execute();

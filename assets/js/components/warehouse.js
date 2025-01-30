@@ -8,8 +8,8 @@ export const getRowWarehouse = (warehouse) => {
     <td>${warehouse.region}</td>
     <td>
         <p>
-            <i class="fa-solid fa-trash text-danger" data-id="${user.id}"></i>   
-            <i class="fa-solid fa-pen-to-square text-primary" data-id="${user.id}"></i>
+            <i class="fa-solid fa-trash text-danger" data-id="${warehouse.id}"></i>   
+            <i class="fa-solid fa-pen-to-square text-primary" data-id="${warehouse.id}"></i>
         </p>
     </td>
     `

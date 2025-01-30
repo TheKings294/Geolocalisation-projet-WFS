@@ -5,6 +5,7 @@ import {getRowsSellPoint} from "../sell-point.js";
 import {request} from "../../services/http-request.js";
 import {toast} from "./toats.js";
 import {getRowGroups} from "../groups.js";
+import {getRowWarehouse} from "../warehouse.js";
 
 export const refreshPage = async (curentPage, situation, component, sens, who, editLink) => {
     const tableElement = document.querySelector('#list')
@@ -20,6 +21,8 @@ export const refreshPage = async (curentPage, situation, component, sens, who, e
             tableBody.appendChild(getRowsSellPoint(data.result[i]))
         } else if (situation === 3) {
             tableBody.appendChild(getRowGroups(data.result[i]))
+        } else if (situation === 4) {
+            tableBody.appendChild(getRowWarehouse(data.result[i]))
         }
     }
     const trash = document.querySelectorAll('.fa-trash')

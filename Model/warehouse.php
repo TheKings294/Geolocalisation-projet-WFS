@@ -32,7 +32,7 @@ function getWarehouses($pdo, $page, $perPage, $who, $sens, $all): array | string
 function getNbPage($pdo): array | string
 {
     try {
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM warehouse");
+        $stmt = $pdo->prepare("SELECT COUNT(*) AS nb FROM warehouse");
         $stmt->execute();
         return $stmt->fetch();
     } catch (Exception $e) {

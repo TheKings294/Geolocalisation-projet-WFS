@@ -61,3 +61,15 @@
         </ul>
     </nav>
 </div>
+<script src="./assets/js/components/shared/list.js" type="module"></script>
+<script src="./assets/js/components/shared/sortby.js" type="module"></script>
+<script type="module">
+    import {refreshPage} from "./assets/js/components/shared/list.js";
+    import {sortFunction} from "./assets/js/components/shared/sortby.js";
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        let curentPage = 1
+        await sortFunction(curentPage, 4, 'warehouse')
+        refreshPage(curentPage, 4, 'warehouse', 'ASC', 'id', 'warehouse')
+    })
+</script>

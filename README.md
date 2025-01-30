@@ -53,5 +53,9 @@ Pour vous connecter à l'application après son intégration :
 - **Adresse mail** : admin@admin.com
 - **Mot de passe** : admin
 
+## MCD de la base de donnée 
+
+![MCD de la base](docs/ModelConceptuelDonnée.png)
+
 ## Licence
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.

@@ -14,7 +14,18 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
     }
     switch($_GET['action']) {
         case 'get':
-            $res = getUser($pdo, $_GET['id']);
+            $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
+
+            if ($id === null) {
+                http_reponse_error('id connot be null');
+                exit();
+            }
+            if (!is_numeric($id)) {
+                http_reponse_error('Id must be numeric');
+                exit();
+            }
+
+            $res = getUser($pdo, $id);
             if (!is_array($res)) {
                 http_reponse_error('le user n a pas pu être récupéré');
                 $appLogger->critical('[' .$_SESSION['username'] . ']' . ' ' . $res, [

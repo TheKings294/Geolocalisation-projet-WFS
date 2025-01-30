@@ -13,10 +13,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WIDTH']) &&
         switch($_GET['action']) {
             case 'get':
                 $id = isset($_GET['id']) ? cleanCodeString($_GET['id']) : null;
+
                 if ($id === null) {
                     http_reponse_error('id cannot be null');
                     exit();
                 }
+                if (!is_numeric($id)) {
+                    http_reponse_error('id is not numeric');
+                    exit();
+                }
+
                 $res = getSellPoint($pdo, $id);
                 if (is_string($res)) {
                     http_reponse_error('Impossible to get sell point !');

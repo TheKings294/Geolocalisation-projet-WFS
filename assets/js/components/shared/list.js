@@ -26,9 +26,7 @@ export const refreshPage = async (curentPage, situation, component, sens, who, e
     for (let i = 0; i < trash.length; i++) {
         trash[i].addEventListener('click', async () => {
             const id = trash[i].getAttribute('data-id')
-            //console.log(confirm('Voulez vous vriament supriemr'))
-            if(confirm('Voulez vous vraiment suprimer') === true) {
-                console.log(id)
+            if(confirm(`Voulez vous vraiment suprimer le point de vente n°${id}`) === true) {
                 const response = await request(component, 'delete', null, null, null, null, 'GET', id)
                 if(response.hasOwnProperty('error')) {
                     toast(response.error, 'text-bg-danger')

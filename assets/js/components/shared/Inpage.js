@@ -31,16 +31,16 @@ export const getInpage = (total, curentPage, situation, component, sens, action,
                                     data-action="${action}">
                                     Next</a>
                                 </li>`
-    handleInpageClick(curentPage, situation, editLink)
+    handleInpageClick(curentPage, situation, editLink, nbPage)
 }
 
-export const handleInpageClick = (curentPage, situation, editLink) => {
+export const handleInpageClick = (curentPage, situation, editLink, nbPage) => {
     const nextLink = document.querySelector('#next-link')
     const previousLink = document.querySelector('#prev-link')
     const nbPageLink = document.querySelectorAll('.nb-page-link')
 
     previousLink.addEventListener('click', async () => {
-        if(curentPage > 1) {
+        if (curentPage > 1) {
             curentPage--
             await refreshPage(curentPage,
                 situation,
@@ -52,13 +52,15 @@ export const handleInpageClick = (curentPage, situation, editLink) => {
     })
 
     nextLink.addEventListener('click', async () => {
-        curentPage++
-        await refreshPage(curentPage,
-            situation,
-            nextLink.getAttribute('data-component'),
-            nextLink.getAttribute('data-sens'),
-            nextLink.getAttribute('data-action'),
-            editLink)
+        if (curentPage < nbPage) {
+            curentPage++
+            await refreshPage(curentPage,
+                situation,
+                nextLink.getAttribute('data-component'),
+                nextLink.getAttribute('data-sens'),
+                nextLink.getAttribute('data-action'),
+                editLink)
+        }
     })
 
     nbPageLink.forEach(btn => {

@@ -10,21 +10,29 @@ Géolocalisation-projet-WFS est un projet de cours en développement web full st
 - **Dépendances** : Gestion via Composer
 
 ## Instructions d'installation
+1. **Installer le projet via git** :
+   
+    - Installer le projet via git :
+      ```bash
+      git clone https://github.com/TheKings294/Geolocalisation-projet-WFS.git
+      ```
+      
 1. **Préparer la base de données** :
     - Importez la base de données à l'aide du fichier dump fourni.
 
 2. **Installer les dépendances** :
+    
     - Exécutez la commande suivante dans le répertoire principal du projet :
       ```bash
       composer install
       ```
 
-3. **Configurer l'environnement** :
+4. **Configurer l'environnement** :
     - Copiez le fichier `.env.example` en `.env`.
     - Modifiez les variables dans le fichier `.env` pour qu'elles correspondent à votre configuration locale.
     - **Clé API pour l'API de l'Insee** : Ajoutez une clé API valide pour l'API de l'Insee dans le fichier `.env` sous la variable `SIRENE_API_KEY`.
 
-4. **Lancer le script de fixture** :
+5. **Lancer le script de fixture** :
     - Exécutez la commande suivante dans le répertoire principal du projet :
       ```bash
       php scripts/fixture.php

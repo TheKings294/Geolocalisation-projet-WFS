@@ -47,7 +47,7 @@
         <link rel="stylesheet" href="Includes/markerCluster/MarkerCluster.Default.css">
         <link rel="stylesheet" href="Includes/markerCluster/MarkerCluster.css">
         <link rel="stylesheet" href="./assets/css/style.css">
-        <link rel="icon" href="./favicon.ico">
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
         <title>Projet Géolocalisation</title>
     </head>
     <body data-bs-theme="dark">

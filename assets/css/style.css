@@ -1,0 +1,31 @@
+.custom-svg-icon {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+.bg-success {
+    background-color: #27742d !important;
+}
+.btn-success {
+    background-color: #27742d !important;
+    border-color: #27742d !important;
+}
+.text-warning {
+    color: #ffd700 !important;
+}
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    color: black;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+#autoComplete_list_1 li {
+    list-style: none;
+}
